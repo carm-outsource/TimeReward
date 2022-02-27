@@ -1,0 +1,21 @@
+main: cc.carm.plugin.timereward.Main
+name: TimeReward
+
+version: ${project.version}
+description: ${project.description}
+website: ${project.url}
+
+authors:
+  - CarmJos
+
+commands:
+  "TimeReward":
+    permission: "TimeReward.admin"
+    description: "在线自动领奖的基础指令。"
+    usage: "/TimeReward help"
+
+permissions:
+
+  "TimeReward.admin":
+    description: "区域保护插件的管理员权限。"
+    default: op
