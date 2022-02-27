@@ -73,7 +73,6 @@
             <artifactId>easyplugin-main</artifactId>
             <version>${easyplugin.version}</version>
             <scope>compile</scope>
-
             <optional>true</optional>
         </dependency>
 

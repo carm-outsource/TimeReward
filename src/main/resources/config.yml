@@ -4,3 +4,20 @@
 version: ${project.version}
 
 debug: false
+
+
+database:
+  # 数据库驱动路径，默认为 MySQL
+  driver: "com.mysql.cj.jdbc.Driver"
+  # 数据库连接配置
+  host: "127.0.0.1"
+  port: 3306
+  database: "minecraft"
+  username: "username"
+  password: "password"
+  additional: "?useSSL=false"
+  # 插件相关表的名称
+  tables:
+    claimed: "tr_user_claimed" # 用于记录用户奖励领取情况的表
+    time: "tr_user_times" # 用于记录用户在线时间的表
+
