@@ -1,24 +1,19 @@
 ```text
-
- _____            _               _____           _            _   _             
-|  __ \          (_)             |  __ \         | |          | | (_)            
-| |__) |___  __ _ _  ___  _ __   | |__) | __ ___ | |_ ___  ___| |_ _  ___  _ __  
-|  _  // _ \/ _` | |/ _ \| '_ \  |  ___/ '__/ _ \| __/ _ \/ __| __| |/ _ \| '_ \ 
-| | \ \  __/ (_| | | (_) | | | | | |   | | | (_) | ||  __/ (__| |_| | (_) | | | |
-|_|  \_\___|\__, |_|\___/|_| |_| |_|   |_|  \___/ \__\___|\___|\__|_|\___/|_| |_|
-             __/ |                                                               
-            |___/                                                                
+ _____ _               ______                           _ 
+|_   _(_)              | ___ \                         | |
+  | |  _ _ __ ___   ___| |_/ /_____      ____ _ _ __ __| |
+  | | | | '_ ` _ \ / _ \    // _ \ \ /\ / / _` | '__/ _` |
+  | | | | | | | | |  __/ |\ \  __/\ V  V / (_| | | | (_| |
+  \_/ |_|_| |_| |_|\___\_| \_\___| \_/\_/ \__,_|_|  \__,_|
 ```
 
-# timereward
+# TimeReward
 
-[![workflow](https://github.com/CarmJos/timereward/actions/workflows/maven.yml/badge.svg?branch=master)](https://github.com/CarmJos/timereward/actions/workflows/maven.yml)
+[![workflow](https://github.com/CarmJos/TimeReward/actions/workflows/maven.yml/badge.svg?branch=master)](https://github.com/CarmJos/TimeReward/actions/workflows/maven.yml)
 ![Support](https://img.shields.io/badge/Minecraft-Java%201.16--Latest-yellow)
-![](https://visitor-badge.glitch.me/badge?page_id=timereward.readme)
+![](https://visitor-badge.glitch.me/badge?page_id=TimeReward.readme)
 
-区域保护插件，将不符合条件的玩家弹出区域，基于EasyPlugin实现。
-
-本插件由 [重庆溢鹏多赛科技有限公司](https://ypchongqing.com) 请求本人开发，经过授权后开源。
+在线时长自动领奖插件，通过指令发放奖励，基于EasyPlugin实现。
 
 ## 插件依赖
 
