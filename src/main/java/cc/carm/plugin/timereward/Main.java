@@ -10,6 +10,7 @@ import cc.carm.plugin.timereward.listener.UserListener;
 import cc.carm.plugin.timereward.manager.ConfigManager;
 import cc.carm.plugin.timereward.manager.RewardManager;
 import cc.carm.plugin.timereward.manager.UserManager;
+import cc.carm.plugin.timereward.util.JarResourceUtils;
 import org.bukkit.Bukkit;
 
 public class Main extends EasyPlugin {
@@ -89,6 +90,12 @@ public class Main extends EasyPlugin {
     @Override
     public boolean isDebugging() {
         return PluginConfig.DEBUG.get();
+    }
+
+    @Override
+    public void outputInfo() {
+        String[] pluginInfo = JarResourceUtils.readResource(this.getResource("PLUGIN_INFO"));
+        if (pluginInfo != null) Main.info(pluginInfo);
     }
 
     public static Main getInstance() {
