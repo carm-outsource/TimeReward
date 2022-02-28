@@ -10,7 +10,7 @@
 # TimeReward
 
 [![workflow](https://github.com/CarmJos/TimeReward/actions/workflows/maven.yml/badge.svg?branch=master)](https://github.com/CarmJos/TimeReward/actions/workflows/maven.yml)
-![Support](https://img.shields.io/badge/Minecraft-Java%201.16--Latest-yellow)
+![Support](https://img.shields.io/badge/Minecraft-Java%201.12--Latest-yellow)
 ![](https://visitor-badge.glitch.me/badge?page_id=TimeReward.readme)
 
 在线时长自动领奖插件，通过指令发放奖励，基于EasyPlugin实现。
