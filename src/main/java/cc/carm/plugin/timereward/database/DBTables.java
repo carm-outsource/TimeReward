@@ -30,7 +30,7 @@ public class DBTables {
         );
 
         protected static final String[] TABLE_COLUMNS = new String[]{
-                "`id` INT NOT NULL UNSIGNED AUTO_INCREMENT UNIQUE KEY", // 排序键
+                "`id` INT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE KEY", // 排序键
                 "`uuid` VARCHAR(36) NOT NULL PRIMARY KEY COMMENT '用户UUID'", // 用户的UUID 主键
                 "`value` MEDIUMTEXT", // 已领取的奖励ID
                 "`update` DATETIME NOT NULL " +
