@@ -97,11 +97,16 @@ public class RewardManager {
         if (check && !reward.checkPermission(player)) return false;
 
         user.addClaimedReward(reward.getRewardID());
+        executeCommand(player, reward);
+        return true;
+    }
+
+    public void executeCommand(Player player, RewardContents reward) {
+        Main.debugging("正在为玩家 " + player.getName() + " 执行奖励 " + reward.getRewardID() + " 的相关指令。");
         List<String> finalCommands = MessageUtils.setCustomParams(
-                reward.getCommands(), "%(reward_name)", reward.getDisplayName()
+                reward.getCommands(), "%(name)", reward.getDisplayName()
         );
         TimeRewardAPI.executeCommands(player, finalCommands); // 执行命令
-        return true;
     }
 
     public boolean claimReward(Player player, RewardContents reward) {

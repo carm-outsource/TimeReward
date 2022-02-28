@@ -28,6 +28,21 @@
 指令主指令为 `/TimeReward`
 
 ```text
+# reload
+@ 管理指令 (TimeReward.admin)
+- 重载插件配置文件。
+
+# user <玩家名>
+@ 管理指令 (TimeReward.admin)
+- 查看用户的在线时长信息与奖励领取情况。
+
+# list 
+@ 管理指令 (TimeReward.admin)
+- 列出所有奖励与条件。
+
+# test <奖励ID>
+@ 管理指令 (TimeReward.admin)
+- 测试执行奖励配置的指令。
 ```
 
 ## 插件权限
