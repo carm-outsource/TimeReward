@@ -188,6 +188,7 @@
                 <configuration>
                     <finalName>${project.name}-${project.version}</finalName>
                     <outputDirectory>${project.basedir}/asset</outputDirectory>
+                    <minimizeJar>true</minimizeJar>
                     <relocations>
                         <relocation>
                             <pattern>cc.carm.lib</pattern>
