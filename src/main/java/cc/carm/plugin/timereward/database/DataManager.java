@@ -27,7 +27,7 @@ public class DataManager {
                     DBConfiguration.DRIVER_NAME.get(), DBConfiguration.buildJDBC(),
                     DBConfiguration.USERNAME.get(), DBConfiguration.PASSWORD.get()
             );
-            this.sqlManager.setDebugMode(() -> Main.getInstance().isDebugging());
+//            this.sqlManager.setDebugMode(() -> Main.getInstance().isDebugging());
         } catch (Exception exception) {
             Main.severe("无法连接到数据库，请检查配置文件。");
             exception.printStackTrace();
