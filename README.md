@@ -20,7 +20,7 @@
 - **[必须]** 插件本体基于 [Spigot-API](https://hub.spigotmc.org/stash/projects/SPIGOT) 、 [BukkitAPI](http://bukkit.org/) 实现。
 - **[自带]** 插件功能基于 [EasyPlugin](https://github.com/CarmJos/EasyPlugin) 实现。
 - **[自带]** 数据功能基于 [EasySQL](https://github.com/CarmJos/EasySQL) 实现。
- 
+
 详细依赖列表可见 [Dependencies](https://github.com/CarmJos/timereward/network/dependencies) 。
 
 ## 插件指令
@@ -36,6 +36,22 @@
 
 # TimeReward.admin
 - 建筑魔杖的管理权限。
+
+```
+
+## 插件变量
+
+```text
+# %TimeReward_time%
+- 得到玩家总共的在线时长(秒)。
+
+# %TimeReward_reward_<奖励ID>%
+- 得到某个奖励配置的名称。
+
+# %TimeReward_claimed_<奖励ID>%
+- 得到玩家是否已经领取了某个奖励。
+- * 也可以代表玩家是否可以领取某个奖励 
+- * 因为一旦可以领取就会自动领取，变为已领取状态
 
 ```
 

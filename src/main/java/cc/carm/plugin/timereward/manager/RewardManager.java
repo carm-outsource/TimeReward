@@ -73,6 +73,10 @@ public class RewardManager {
         return new HashMap<>(getRewardsMap());
     }
 
+    public RewardContents getReward(String rewardID) {
+        return getRewardsMap().get(rewardID);
+    }
+
     protected HashMap<String, RewardContents> getRewardsMap() {
         return PluginConfig.REWARDS.getOptional().orElse(new HashMap<>());
     }

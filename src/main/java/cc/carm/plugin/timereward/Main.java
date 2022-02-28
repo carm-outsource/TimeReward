@@ -2,8 +2,10 @@ package cc.carm.plugin.timereward;
 
 import cc.carm.lib.easyplugin.EasyPlugin;
 import cc.carm.lib.easyplugin.i18n.EasyPluginMessageProvider;
+import cc.carm.lib.easyplugin.utils.MessageUtils;
 import cc.carm.plugin.timereward.configuration.PluginConfig;
 import cc.carm.plugin.timereward.database.DataManager;
+import cc.carm.plugin.timereward.hooker.PAPIExpansion;
 import cc.carm.plugin.timereward.listener.UserListener;
 import cc.carm.plugin.timereward.manager.ConfigManager;
 import cc.carm.plugin.timereward.manager.RewardManager;
@@ -56,6 +58,13 @@ public class Main extends EasyPlugin {
         regListener(new UserListener());
 
         log("注册指令...");
+
+        if (MessageUtils.hasPlaceholderAPI()) {
+            log("注册变量...");
+            new PAPIExpansion(this).register();
+        } else {
+            log("检测到未安装PlaceholderAPI，跳过变量注册。");
+        }
 
         return true;
     }
