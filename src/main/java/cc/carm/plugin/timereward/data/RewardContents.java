@@ -57,7 +57,7 @@ public class RewardContents {
     }
 
     public boolean isTimeEnough(long requireSeconds) {
-        return getTime() >= requireSeconds;
+        return requireSeconds >= getTime();
     }
 
     @Override

@@ -53,7 +53,7 @@ public class RewardManager {
         for (String rewardID : section.getKeys(false)) {
             ConfigurationSection rewardSection = section.getConfigurationSection(rewardID);
             if (rewardSection == null) continue;
-            long time = rewardSection.getLong("time");
+            long time = rewardSection.getLong("time", -1);
             if (time <= 0) {
                 Main.severe("奖励 " + rewardID + " 的时间配置错误，请检查配置文件。");
                 continue;
