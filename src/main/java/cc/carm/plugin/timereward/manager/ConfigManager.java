@@ -10,7 +10,6 @@ import cc.carm.plugin.timereward.configuration.PluginMessages;
 public class ConfigManager {
 
     private FileConfig pluginConfiguration;
-
     private MessagesConfig messageConfiguration;
 
     public boolean initConfig() {
