@@ -29,14 +29,16 @@ public class PluginMessages extends MessagesRoot {
 
         public static final EasyMessageList OBJECT = EasyMessageList.builder()
                 .contents(
-                        "&8# &f%(id) &f%(name)",
-                        "&8- &7领取条件 &f在线&e%(time)&f秒"
+                        "&8# &f%(id)",
+                        "&8- &7奖励名称 &f%(name)",
+                        "&8- &7领取时间 &f&e%(time)&f秒"
                 ).params("id", "name", "time").build();
 
         public static final EasyMessageList OBJECT_PERM = EasyMessageList.builder()
                 .contents(
-                        "&8# &f%(id) &f%(name)",
-                        "&8- &7领取条件 &f在线&e%(time)&f秒",
+                        "&8# &f%(id)",
+                        "&8- &7奖励名称 &f%(name)",
+                        "&8- &7领取时间 &f&e%(time)&f秒",
                         "&8- &7需要权限 &f%(permission)"
                 ).params("id", "name", "time", "permission").build();
     }

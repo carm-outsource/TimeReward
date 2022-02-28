@@ -14,7 +14,7 @@
 
     <groupId>cc.carm.plugin</groupId>
     <artifactId>timereward</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
 
     <name>TimeReward</name>

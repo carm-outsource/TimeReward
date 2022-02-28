@@ -16,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,8 +44,9 @@ public class TimeRewardCommand implements CommandExecutor, TabCompleter {
             }
             return true;
         } else if (aim.equalsIgnoreCase("list")) {
-            PluginMessages.List.HEADER.send(sender);
-            for (RewardContents reward : TimeRewardAPI.getRewardManager().listRewards().values()) {
+            Collection<RewardContents> awards = TimeRewardAPI.getRewardManager().listRewards().values();
+            PluginMessages.List.HEADER.send(sender, awards.size());
+            for (RewardContents reward : awards) {
                 if (reward.getPermission() != null) {
                     PluginMessages.List.OBJECT_PERM.send(sender,
                             reward.getRewardID(), reward.getDisplayName(),
