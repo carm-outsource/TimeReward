@@ -14,8 +14,6 @@ public class PluginMessages extends MessagesRoot {
             "&8-&7 查看用户的在线时长信息与奖励领取情况。",
             "&8#&f list",
             "&8-&7 列出所有奖励与条件。",
-            "&8#&f info &6<奖励ID>",
-            "&8-&7 查看奖励详情。",
             "&8#&f test &6<奖励ID>",
             "&8-&7 测试执行奖励配置的指令。"
     );
