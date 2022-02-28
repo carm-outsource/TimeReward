@@ -86,14 +86,6 @@
         </dependency>
 
         <dependency>
-            <groupId>catserver</groupId>
-            <artifactId>CatServer</artifactId>
-            <version>1.12.2-b10faff</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/CatServerSRG-b10faff.jar</systemPath>
-        </dependency>
-
-        <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
             <version>1.12.2-R0.1-SNAPSHOT</version>
