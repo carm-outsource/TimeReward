@@ -8,6 +8,9 @@ website: ${project.url}
 authors:
   - CarmJos
 
+softdepend:
+  - PlaceholderAPI
+
 commands:
   "TimeReward":
     permission: "TimeReward.admin"

@@ -3,9 +3,9 @@ package cc.carm.plugin.timereward.database;
 import cc.carm.lib.easysql.EasySQL;
 import cc.carm.lib.easysql.api.SQLManager;
 import cc.carm.plugin.timereward.Main;
-import me.clip.placeholderapi.libs.gson.Gson;
-import me.clip.placeholderapi.libs.gson.JsonElement;
-import me.clip.placeholderapi.libs.gson.JsonParser;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,8 +16,8 @@ import java.util.Set;
 import java.util.UUID;
 
 public class DataManager {
-
     protected static final Gson GSON = new Gson();
+    protected static final JsonParser PARSER = new JsonParser();
     private SQLManager sqlManager;
 
     public boolean initialize() {
@@ -82,7 +82,7 @@ public class DataManager {
                     if (!resultSet.next()) return new LinkedHashSet<>();
                     String json = resultSet.getString("value");
                     if (json == null) return new LinkedHashSet<>();
-                    JsonElement element = JsonParser.parseString(json);
+                    JsonElement element = PARSER.parse(json);
                     if (!element.isJsonArray()) return new LinkedHashSet<>();
                     Set<String> ids = new LinkedHashSet<>();
                     for (JsonElement e : element.getAsJsonArray()) {
