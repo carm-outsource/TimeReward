@@ -49,6 +49,7 @@ public class Main extends EasyPlugin {
 
         log("加载奖励管理器...");
         this.rewardManager = new RewardManager();
+        this.rewardManager.initialize();
 
         log("注册监听器...");
         regListener(new UserListener());
@@ -60,6 +61,9 @@ public class Main extends EasyPlugin {
 
     @Override
     protected void shutdown() {
+
+        info("终止发奖励进程...");
+        this.rewardManager.shutdown();
 
         info("卸载监听器...");
         Bukkit.getServicesManager().unregisterAll(this);

@@ -10,12 +10,12 @@ public class UserListener implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
-        TimeRewardAPI.getUserManager().loadData(event.getPlayer().getUniqueId());
+        TimeRewardAPI.getUserManager().load(event.getPlayer().getUniqueId());
     }
 
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
-        TimeRewardAPI.getUserManager().unloadData(event.getPlayer().getUniqueId());
+        TimeRewardAPI.getUserManager().unload(event.getPlayer().getUniqueId());
     }
 
 }

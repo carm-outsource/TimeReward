@@ -28,7 +28,6 @@ public class TimeRewardUser {
         this(userUUID, claimedRewards, storedSeconds, System.currentTimeMillis());
     }
 
-
     public TimeRewardUser(UUID userUUID, Set<@NotNull String> claimedRewards,
                           long storedSeconds, long joinMillis) {
         this.userUUID = userUUID;
@@ -81,7 +80,7 @@ public class TimeRewardUser {
         return this.claimedRewards.contains(rewardId);
     }
 
-    public boolean claimReward(@NotNull String rewardId) {
+    public boolean addClaimedReward(@NotNull String rewardId) {
         if (isClaimed(rewardId)) return false; // 已经领取过了
         this.claimedRewards.add(rewardId);
         return true;

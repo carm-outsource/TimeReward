@@ -24,7 +24,7 @@ public class UserManager {
     }
 
     @NotNull
-    public TimeRewardUser readData(UUID userUUID) {
+    public TimeRewardUser read(UUID userUUID) {
         try {
             long start = System.currentTimeMillis();
             DataManager storage = Main.getDataManager();
@@ -47,7 +47,7 @@ public class UserManager {
         }
     }
 
-    public void saveData(TimeRewardUser user) {
+    public void save(TimeRewardUser user) {
         try {
             long start = System.currentTimeMillis();
             DataManager dataManager = Main.getDataManager();
@@ -64,30 +64,30 @@ public class UserManager {
         }
     }
 
-    public void loadData(UUID userUUID) {
-        getUsersMap().put(userUUID, readData(userUUID));
+    public void load(UUID userUUID) {
+        getUsersMap().put(userUUID, read(userUUID));
     }
 
-    public void unloadData(UUID userUUID) {
-        unloadData(userUUID, true);
+    public void unload(UUID userUUID) {
+        unload(userUUID, true);
     }
 
-    public void unloadData(UUID userUUID, boolean save) {
-        TimeRewardUser data = getData(userUUID);
+    public void unload(UUID userUUID, boolean save) {
+        TimeRewardUser data = get(userUUID);
         if (data == null) return;
-        if (save) saveData(data);
+        if (save) save(data);
         getUsersMap().remove(userUUID);
     }
 
     public void loadAll() {
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (getUsersMap().containsKey(player.getUniqueId())) continue;
-            loadData(player.getUniqueId());
+            load(player.getUniqueId());
         }
     }
 
     public void saveAll() {
-        getUsersMap().values().forEach(this::saveData);
+        getUsersMap().values().forEach(this::save);
     }
 
     public void unloadAll(boolean save) {
@@ -96,18 +96,18 @@ public class UserManager {
     }
 
     @Nullable
-    public TimeRewardUser getData(UUID userUUID) {
+    public TimeRewardUser get(UUID userUUID) {
         return getUsersMap().get(userUUID);
     }
 
     @NotNull
-    public TimeRewardUser getData(Player player) {
+    public TimeRewardUser get(Player player) {
         return getUsersMap().get(player.getUniqueId());
     }
 
     public void editData(@NotNull UUID uuid, @NotNull DataTaskRunner task) {
-        TimeRewardUser user = getData(uuid);
-        if (user == null) user = readData(uuid); // 不在线则加载数据
+        TimeRewardUser user = get(uuid);
+        if (user == null) user = read(uuid); // 不在线则加载数据
         try {
             task.run(user, Main.getDataManager());
         } catch (Exception exception) {
@@ -123,7 +123,7 @@ public class UserManager {
 
     @NotNull
     @Unmodifiable
-    public Map<UUID, TimeRewardUser> listUsers() {
+    public Map<UUID, TimeRewardUser> list() {
         return new HashMap<>(getUsersMap());
     }
 

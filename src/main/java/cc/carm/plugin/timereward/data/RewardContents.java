@@ -1,5 +1,7 @@
 package cc.carm.plugin.timereward.data;
 
+import cc.carm.lib.easyplugin.utils.ColorParser;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,12 +40,24 @@ public class RewardContents {
         return name;
     }
 
+    public @NotNull String getDisplayName() {
+        return ColorParser.parseColor(getName() == null ? getRewardID() : getName());
+    }
+
     public @Nullable String getPermission() {
         return permission;
     }
 
     public @NotNull List<String> getCommands() {
         return commands;
+    }
+
+    public boolean checkPermission(@NotNull Player player) {
+        return permission == null || player.hasPermission(permission);
+    }
+
+    public boolean isTimeEnough(long requireSeconds) {
+        return getTime() >= requireSeconds;
     }
 
     @Override
