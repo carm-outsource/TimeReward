@@ -14,6 +14,14 @@ public class PluginConfig {
             "debug", Boolean.class, false
     );
 
+    public static final ConfigValue<Boolean> METRICS = new ConfigValue<>(
+            "metrics", Boolean.class, true
+    );
+
+    public static final ConfigValue<Boolean> CHECK_UPDATE = new ConfigValue<>(
+            "check-update", Boolean.class, true
+    );
+
     public static final ConfigSectionCast<HashMap<String, RewardContents>> REWARDS = new ConfigSectionCast<>(
             "rewards", TimeRewardAPI.getRewardManager()::readRewards, new LinkedHashMap<>()
     );

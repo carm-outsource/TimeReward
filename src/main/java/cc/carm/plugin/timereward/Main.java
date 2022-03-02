@@ -6,12 +6,14 @@ import cc.carm.lib.easyplugin.utils.MessageUtils;
 import cc.carm.plugin.timereward.command.TimeRewardCommand;
 import cc.carm.plugin.timereward.configuration.PluginConfig;
 import cc.carm.plugin.timereward.database.DataManager;
+import cc.carm.plugin.timereward.hooker.GHUpdateChecker;
 import cc.carm.plugin.timereward.hooker.PAPIExpansion;
 import cc.carm.plugin.timereward.listener.UserListener;
 import cc.carm.plugin.timereward.manager.ConfigManager;
 import cc.carm.plugin.timereward.manager.RewardManager;
 import cc.carm.plugin.timereward.manager.UserManager;
 import cc.carm.plugin.timereward.util.JarResourceUtils;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 
 public class Main extends EasyPlugin {
@@ -21,6 +23,8 @@ public class Main extends EasyPlugin {
         super(new EasyPluginMessageProvider.zh_CN());
         instance = this;
     }
+
+    private GHUpdateChecker checker;
 
     protected DataManager dataManager;
     protected ConfigManager configManager;
@@ -68,6 +72,19 @@ public class Main extends EasyPlugin {
             new PAPIExpansion(this).register();
         } else {
             log("检测到未安装PlaceholderAPI，跳过变量注册。");
+        }
+
+        if (PluginConfig.METRICS.get()) {
+            info("启用统计数据...");
+            Metrics metrics = new Metrics(this, 14505);
+        }
+
+        if (PluginConfig.CHECK_UPDATE.get()) {
+            info("开始检查更新...");
+            this.checker = new GHUpdateChecker("CarmJos", "TimeReward");
+            getScheduler().runAsync(() -> this.checker.checkUpdate(Main.this.getDescription().getVersion()));
+        } else {
+            info("已禁用检查更新，跳过。");
         }
 
         return true;
