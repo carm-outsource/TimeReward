@@ -236,15 +236,15 @@
                     <relocations>
                         <relocation>
                             <pattern>cc.carm.lib</pattern>
-                            <shadedPattern>cc.carm.plugin.moeteleport.lib</shadedPattern>
+                            <shadedPattern>cc.carm.plugin.timereward.lib</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>org.bstats</pattern>
-                            <shadedPattern>cc.carm.plugin.moeteleport.lib.bstats</shadedPattern>
+                            <shadedPattern>cc.carm.plugin.timereward.lib.bstats</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>org.json</pattern>
-                            <shadedPattern>cc.carm.plugin.moeteleport.lib.json</shadedPattern>
+                            <shadedPattern>cc.carm.plugin.timereward.lib.json</shadedPattern>
                         </relocation>
                     </relocations>
                     <filters>
