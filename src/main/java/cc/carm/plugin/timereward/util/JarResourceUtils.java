@@ -18,7 +18,7 @@ public class JarResourceUtils {
 
     public static @Nullable String[] readResource(@Nullable InputStream resourceStream) {
         if (resourceStream == null) return null;
-        try (Scanner scanner = new Scanner(resourceStream, StandardCharsets.UTF_8)) {
+        try (Scanner scanner = new Scanner(resourceStream, StandardCharsets.UTF_8.name())) {
             List<String> contents = new ArrayList<>();
             while (scanner.hasNextLine()) {
                 contents.add(scanner.nextLine());

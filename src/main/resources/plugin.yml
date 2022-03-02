@@ -11,6 +11,8 @@ authors:
 softdepend:
   - PlaceholderAPI
 
+api-version: 1.13
+
 commands:
   "TimeReward":
     permission: "TimeReward.admin"
