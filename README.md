@@ -20,6 +20,7 @@
 - **[必须]** 插件本体基于 [Spigot-API](https://hub.spigotmc.org/stash/projects/SPIGOT) 、 [BukkitAPI](http://bukkit.org/) 实现。
 - **[自带]** 插件功能基于 [EasyPlugin](https://github.com/CarmJos/EasyPlugin) 实现。
 - **[自带]** 数据功能基于 [EasySQL](https://github.com/CarmJos/EasySQL) 实现。
+- **[推荐]** 消息变量基于 [PlaceholderAPI](https://www.spigotmc.org/resources/6245/) 实现。
 
 详细依赖列表可见 [Dependencies](https://github.com/CarmJos/timereward/network/dependencies) 。
 
