@@ -90,6 +90,10 @@
 
 详见代码源文件，将在首次启动时生成配置。
 
+## 使用统计
+
+[![bStats](https://bstats.org/signatures/bukkit/TimeReward.svg)](https://bstats.org/plugin/bukkit/TimeReward/14505)
+
 ## 支持与捐赠
 
 若您觉得本插件做的不错，您可以捐赠支持我！
