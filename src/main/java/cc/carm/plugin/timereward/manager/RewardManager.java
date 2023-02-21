@@ -1,12 +1,8 @@
 package cc.carm.plugin.timereward.manager;
 
-import cc.carm.lib.configuration.core.ConfigurationRoot;
-import cc.carm.lib.configuration.core.value.type.ConfiguredSection;
-import cc.carm.lib.configuration.core.value.type.ConfiguredValue;
 import cc.carm.lib.easyplugin.utils.MessageUtils;
 import cc.carm.plugin.timereward.Main;
 import cc.carm.plugin.timereward.TimeRewardAPI;
-import cc.carm.plugin.timereward.conf.PluginConfig;
 import cc.carm.plugin.timereward.storage.RewardContents;
 import cc.carm.plugin.timereward.storage.UserData;
 import com.google.common.collect.ImmutableMap;

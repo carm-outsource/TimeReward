@@ -48,6 +48,31 @@ public class PluginMessages extends ConfigurationRoot {
         };
     }
 
+    public static final ConfiguredMessageList<BaseComponent[]> NO_PERMISSION = list().defaults(
+            "&c&l抱歉！&f但您没有足够的权限使用该指令。"
+    ).build();
+
+    public static final ConfiguredMessageList<BaseComponent[]> NOT_PLAYER = list().defaults(
+            "&f该指令请以玩家身份执行。"
+    ).build();
+
+    public static final ConfiguredMessageList<BaseComponent[]> NOT_ONLINE = list().defaults(
+            "&f玩家 &e%(player) &f并不在线。"
+    ).params("player").build();
+
+    public static final ConfiguredMessageList<BaseComponent[]> NOT_EXISTS = list().defaults(
+            "&f奖励 &e%(award) &f并不存在。"
+    ).params("award").build();
+
+    public static final ConfiguredMessageList<BaseComponent[]> USER_INFO = list().defaults(
+            "&f玩家 &6%(player) &f已在线&e%(time)&f秒，共领取了 &e%(amount)&f 次奖励。",
+            "&7已领取的奖励列表如下：&r%(rewards) &7。"
+    ).params("player", "time", "amount", "rewards").build();
+
+    public static final ConfiguredMessageList<BaseComponent[]> COMMAND_LIST = list().defaults(
+            "&f正在执行奖励 %(award) 的指令列表..."
+    ).params("award").build();
+
     public static final ConfiguredMessageList<BaseComponent[]> COMMAND_USAGE = list().defaults(
             "&6&l在线奖励 &f指令帮助",
             "&8#&f reload",
@@ -82,21 +107,20 @@ public class PluginMessages extends ConfigurationRoot {
 
     }
 
-    public static final ConfiguredMessageList<BaseComponent[]> USER_INFO = list().defaults(
-            "&f玩家 &6%(player) &f已在线&e%(time)&f秒，共领取了 &e%(amount)&f 次奖励。",
-            "&7已领取的奖励列表如下：&r%(rewards) &7。"
-    ).params("player", "time", "amount", "rewards").build();
+    public static class RELOAD extends ConfigurationRoot {
 
-    public static final ConfiguredMessageList<BaseComponent[]> COMMAND_LIST = list().defaults(
-            "&f正在执行奖励 %(award) 的指令列表..."
-    ).params("award").build();
+        public static final ConfiguredMessageList<BaseComponent[]> START = list().defaults(
+                "&f正在重载配置文件..."
+        ).build();
 
-    public static final ConfiguredMessageList<BaseComponent[]> NOT_ONLINE = list().defaults(
-            "&f玩家 &e%(player) &f并不在线。"
-    ).params("player").build();
+        public static final ConfiguredMessageList<BaseComponent[]> ERROR = list().defaults(
+                "&f配置文件&c重载失败！&f详细原因详见后台输出。"
+        ).build();
 
-    public static final ConfiguredMessageList<BaseComponent[]> NOT_EXISTS = list().defaults(
-            "&f奖励 &e%(award) &f并不存在。"
-    ).params("award").build();
+        public static final ConfiguredMessageList<BaseComponent[]> COMPLETE = list().defaults(
+                "&f配置文件重载完成，共耗时 &d%(time)&fms 。"
+        ).params("time").build();
+
+    }
 
 }

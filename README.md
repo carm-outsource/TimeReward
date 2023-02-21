@@ -8,13 +8,15 @@
 
 # TimeReward
 
-[![workflow](https://github.com/CarmJos/TimeReward/actions/workflows/maven.yml/badge.svg?branch=master)](https://github.com/CarmJos/TimeReward/actions/workflows/maven.yml)
-![Support](https://img.shields.io/badge/Minecraft-Java%201.12--Latest-yellow)
+![CodeSize](https://img.shields.io/github/languages/code-size/carm-outsource/TimeReward)
+[![Download](https://img.shields.io/github/downloads/carm-outsource/TimeReward/total)](https://github.com/carm-outsource/TimeReward/releases)
+[![Java CI with Maven](https://github.com/CarmJos/TimeReward/actions/workflows/maven.yml/badge.svg?branch=master)](https://github.com/CarmJos/TimeReward/actions/workflows/maven.yml)
+![Support](https://img.shields.io/badge/Minecraft-Java%201.8--Latest-yellow)
 ![](https://visitor-badge.glitch.me/badge?page_id=TimeReward.readme)
 
 使用数据库存储的在线时长自动领奖插件，通过指令发放奖励，基于EasyPlugin实现。
 
-## 插件功能
+## 功能
 
 - 基于数据库存储的用户在线时长统计。
 - **高效算法。** 在线时间不受服务器卡顿(如果有)影响。
@@ -23,18 +25,22 @@
 - **轻量插件。** 适合小型服务器使用，配置简单方便。
 - **规范开发。** 插件架构符合开发规范，适合新手开发者学习。
 
-## 插件依赖
+## [依赖](https://github.com/CarmJos/TimeReward/network/dependencies)
 
-- **[必须]** 插件本体基于 [Spigot-API](https://hub.spigotmc.org/stash/projects/SPIGOT) 、 [BukkitAPI](http://bukkit.org/) 实现。
+- **[必须]** 插件本体基于 [Spigot-API](https://hub.spigotmc.org/stash/projects/SPIGOT) 、[BukkitAPI](http://bukkit.org/) 实现。
 - **[自带]** 插件功能基于 [EasyPlugin](https://github.com/CarmJos/EasyPlugin) 实现。
 - **[自带]** 数据功能基于 [EasySQL](https://github.com/CarmJos/EasySQL) 实现。
-- **[推荐]** 消息变量基于 [PlaceholderAPI](https://www.spigotmc.org/resources/6245/) 实现。
+- **[自带]** 消息格式基于 [MineDown](https://github.com/Phoenix616/MineDown) 实现。
+    - 所有 messages.yml 均支持 MineDown 语法。
+- **[推荐]** 变量部分基于 [PlaceholderAPI](https://www.spigotmc.org/resources/6245/) 实现。
 
-详细依赖列表可见 [Dependencies](https://github.com/CarmJos/timereward/network/dependencies) 。
+详细依赖列表可见 [Dependencies](https://github.com/CarmJos/TimeReward/network/dependencies) 。
 
-## 插件指令
+## [指令](src/main/resources/plugin.yml)
 
-指令主指令为 `/TimeReward`
+以下指令的主指令为 `/TimeReward` 或 `/tr`。
+
+- 必须参数 `<参数>`
 
 ```text
 # reload
@@ -54,16 +60,11 @@
 - 测试执行奖励配置的指令。
 ```
 
-## 插件权限
+## 变量 (PlaceholderAPI)
 
-```text
+安装 PlaceholderAPI 后，可以输入 /papi info TimeReward 查看相关变量。
 
-# TimeReward.admin
-- 在线时间奖励的管理权限。
-
-```
-
-## 插件变量
+变量如下:
 
 ```text
 # %TimeReward_time%
@@ -76,18 +77,17 @@
 - 得到玩家是否已经领取了某个奖励。
 - * 也可以代表玩家是否可以领取某个奖励 
 - * 因为一旦可以领取就会自动领取，变为已领取状态
-
 ```
 
 ## 配置文件
 
-### 插件配置文件 ([config.yml](src/main/resources/config.yml))
+### 插件配置文件 ([config.yml](src/main/java/cc/carm/plugin/timereward/conf/PluginConfig.java))
 
-详见源文件。
+详见代码源文件，将在首次启动时生成配置。
 
 ### 消息配置文件 ([messages.yml](src/main/java/cc/carm/plugin/timereward/conf/PluginMessages.java))
 
-详见代码源文件，将在首次启动时生成配置。
+支持 [MineDown 语法](https://wiki.phoenix616.dev/library:minedown:syntax)，详见代码源文件，将在首次启动时生成配置。
 
 ## 使用统计
 
@@ -95,11 +95,10 @@
 
 ## 支持与捐赠
 
-若您觉得本插件做的不错，您可以捐赠支持我！
+若您觉得本插件做的不错，您可以捐赠支持我，感谢您成为开源项目的支持者！
 
-感谢您成为开源项目的支持者！
-
-<img height=25% width=25% src="https://raw.githubusercontent.com/CarmJos/CarmJos/main/img/donate-code.jpg"  alt=""/>
+Many thanks to Jetbrains for kindly providing a license for me to work on this and other open-source projects.  
+[![](https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg)](https://www.jetbrains.com/?from=https://github.com/CarmJos/UserPrefix)
 
 ## 开源协议
 本项目源码采用 [GNU General Public License v3.0](https://opensource.org/licenses/GPL-3.0) 开源协议。

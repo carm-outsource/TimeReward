@@ -48,7 +48,6 @@ public class Main extends EasyPlugin {
             mySQLStorage.initialize();
         } catch (Exception e) {
             severe("初始化存储失败，请检查配置文件。");
-            e.printStackTrace();
             setEnabled(false);
             return false; // 初始化失败，不再继续加载
         }
@@ -79,7 +78,7 @@ public class Main extends EasyPlugin {
 
         if (PluginConfig.METRICS.getNotNull()) {
             info("启用统计数据...");
-            Metrics metrics = new Metrics(this, 14505);
+            new Metrics(this, 14505);
         }
 
         if (PluginConfig.CHECK_UPDATE.getNotNull()) {
@@ -94,17 +93,17 @@ public class Main extends EasyPlugin {
 
     @Override
     protected void shutdown() {
-        info("终止发奖励进程...");
+        info("终止奖励发放进程...");
         this.rewardManager.shutdown();
-
-        info("卸载监听器...");
-        Bukkit.getServicesManager().unregisterAll(this);
 
         info("保存用户数据...");
         this.userManager.unloadAll(true);
 
-        info("结束数据库进程...");
+        info("终止数据库进程...");
         getStorage().shutdown();
+
+        info("卸载监听器...");
+        Bukkit.getServicesManager().unregisterAll(this);
     }
 
     @Override

@@ -29,24 +29,29 @@ public class TimeRewardCommand implements CommandExecutor, TabCompleter {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String alias, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, String[] args) {
         if (args.length < 1) return help(sender);
         String aim = args[0];
 
         if (aim.equalsIgnoreCase("reload")) {
-            sender.sendMessage("§7正在重载配置文件...");
+            long s1 = System.currentTimeMillis();
+            PluginMessages.RELOAD.START.send(sender);
+
             try {
                 Main.getInstance().getConfigProvider().reload();
                 Main.getInstance().getMessageProvider().reload();
-                sender.sendMessage("§a配置文件重载完成！");
+
+                PluginMessages.RELOAD.COMPLETE.send(sender, System.currentTimeMillis() - s1);
             } catch (Exception e) {
-                sender.sendMessage("§c配置文件重载失败，错误信息：" + e.getMessage() + " (详见后台");
+                PluginMessages.RELOAD.ERROR.send(sender);
                 e.printStackTrace();
             }
+
             return true;
         } else if (aim.equalsIgnoreCase("listUserData")) {
             Collection<RewardContents> awards = TimeRewardAPI.getRewardManager().listRewards().values();
             PluginMessages.LIST.HEADER.send(sender, awards.size());
+
             for (RewardContents reward : awards) {
                 if (reward.getPermission() != null) {
                     PluginMessages.LIST.OBJECT_PERM.send(sender,
@@ -59,11 +64,12 @@ public class TimeRewardCommand implements CommandExecutor, TabCompleter {
                     );
                 }
             }
+
             return true;
         } else if (aim.equalsIgnoreCase("test")) {
             if (args.length < 2) return help(sender);
             if (!(sender instanceof Player)) {
-                sender.sendMessage("§c您不是玩家，无法使用此命令！");
+                PluginMessages.NOT_PLAYER.send(sender);
                 return true;
             }
 
@@ -121,7 +127,9 @@ public class TimeRewardCommand implements CommandExecutor, TabCompleter {
                     }
                     break;
                 }
-                default: break;
+                default: {
+                    break;
+                }
             }
         }
 
