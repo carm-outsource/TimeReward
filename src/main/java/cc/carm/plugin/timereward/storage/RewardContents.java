@@ -1,4 +1,4 @@
-package cc.carm.plugin.timereward.data;
+package cc.carm.plugin.timereward.storage;
 
 import cc.carm.lib.easyplugin.utils.ColorParser;
 import org.bukkit.entity.Player;
@@ -41,7 +41,7 @@ public class RewardContents {
     }
 
     public @NotNull String getDisplayName() {
-        return ColorParser.parseColor(getName() == null ? getRewardID() : getName());
+        return ColorParser.parse(getName() == null ? getRewardID() : getName());
     }
 
     public @Nullable String getPermission() {

@@ -1,9 +1,10 @@
 package cc.carm.plugin.timereward.command;
 
+import cc.carm.plugin.timereward.Main;
 import cc.carm.plugin.timereward.TimeRewardAPI;
-import cc.carm.plugin.timereward.configuration.PluginMessages;
-import cc.carm.plugin.timereward.data.RewardContents;
-import cc.carm.plugin.timereward.data.TimeRewardUser;
+import cc.carm.plugin.timereward.conf.PluginMessages;
+import cc.carm.plugin.timereward.storage.RewardContents;
+import cc.carm.plugin.timereward.storage.UserData;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -27,7 +28,6 @@ public class TimeRewardCommand implements CommandExecutor, TabCompleter {
         return true;
     }
 
-
     @Override
     public boolean onCommand(CommandSender sender, Command command, String alias, String[] args) {
         if (args.length < 1) return help(sender);
@@ -36,24 +36,25 @@ public class TimeRewardCommand implements CommandExecutor, TabCompleter {
         if (aim.equalsIgnoreCase("reload")) {
             sender.sendMessage("§7正在重载配置文件...");
             try {
-                TimeRewardAPI.getConfigManager().reload();
+                Main.getInstance().getConfigProvider().reload();
+                Main.getInstance().getMessageProvider().reload();
                 sender.sendMessage("§a配置文件重载完成！");
             } catch (Exception e) {
                 sender.sendMessage("§c配置文件重载失败，错误信息：" + e.getMessage() + " (详见后台");
                 e.printStackTrace();
             }
             return true;
-        } else if (aim.equalsIgnoreCase("list")) {
+        } else if (aim.equalsIgnoreCase("listUserData")) {
             Collection<RewardContents> awards = TimeRewardAPI.getRewardManager().listRewards().values();
-            PluginMessages.List.HEADER.send(sender, awards.size());
+            PluginMessages.LIST.HEADER.send(sender, awards.size());
             for (RewardContents reward : awards) {
                 if (reward.getPermission() != null) {
-                    PluginMessages.List.OBJECT_PERM.send(sender,
+                    PluginMessages.LIST.OBJECT_PERM.send(sender,
                             reward.getRewardID(), reward.getDisplayName(),
                             reward.getTime(), reward.getPermission()
                     );
                 } else {
-                    PluginMessages.List.OBJECT.send(sender,
+                    PluginMessages.LIST.OBJECT.send(sender,
                             reward.getRewardID(), reward.getDisplayName(), reward.getTime()
                     );
                 }
@@ -85,7 +86,7 @@ public class TimeRewardCommand implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            TimeRewardUser user = TimeRewardAPI.getUserManager().get(player);
+            UserData user = TimeRewardAPI.getUserManager().getData(player);
             PluginMessages.USER_INFO.send(sender,
                     player.getName(), user.getAllSeconds(),
                     user.getClaimedRewards().size(), String.join("&8, &f", user.getClaimedRewards())
@@ -97,11 +98,8 @@ public class TimeRewardCommand implements CommandExecutor, TabCompleter {
         return help(sender);
     }
 
-    @Nullable
     @Override
-    public List<String> onTabComplete(
-            @NotNull CommandSender sender, @NotNull Command command,
-            @NotNull String alias, @NotNull String[] args) {
+    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
         List<String> allCompletes = new ArrayList<>();
         // 玩家指令部分
         if (sender.hasPermission("TimeReward.admin")) {
@@ -109,7 +107,7 @@ public class TimeRewardCommand implements CommandExecutor, TabCompleter {
                 case 1: {
                     allCompletes.add("reload");
                     allCompletes.add("user");
-                    allCompletes.add("list");
+                    allCompletes.add("listUserData");
                     if (sender instanceof Player) allCompletes.add("test");
 
                     break;
@@ -123,6 +121,7 @@ public class TimeRewardCommand implements CommandExecutor, TabCompleter {
                     }
                     break;
                 }
+                default: break;
             }
         }
 

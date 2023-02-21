@@ -1,4 +1,4 @@
-package cc.carm.plugin.timereward.data;
+package cc.carm.plugin.timereward.storage;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -10,33 +10,31 @@ import java.util.concurrent.TimeUnit;
 /**
  * 用户奖励数据，用于存储用户的奖励的领取情况。
  */
-public class TimeRewardUser {
+public class UserData {
 
-    UUID userUUID;
+    protected final @NotNull UUID userUUID;
+    private final Set<@NotNull String> claimedRewards; // 记录已领取的奖励ID
+    private final long storedSeconds; // 记录已经游玩的时间
+    private final long joinMillis; // 记录本次加入的时间
 
-    Set<@NotNull String> claimedRewards; //记录已领取的奖励ID
-
-    long storedSeconds; //记录已经游玩的时间
-    long joinMillis; // 记录本次加入的时间
-
-    public TimeRewardUser(UUID userUUID) {
-        this(userUUID, new LinkedHashSet<>(), 0);
+    public UserData(@NotNull UUID userUUID) {
+        this(userUUID, 0, new LinkedHashSet<>());
     }
 
-    public TimeRewardUser(UUID userUUID, Set<@NotNull String> claimedRewards,
-                          long storedSeconds) {
-        this(userUUID, claimedRewards, storedSeconds, System.currentTimeMillis());
+    public UserData(@NotNull UUID userUUID, long storedSeconds,
+                    Set<@NotNull String> claimedRewards) {
+        this(userUUID, storedSeconds, claimedRewards, System.currentTimeMillis());
     }
 
-    public TimeRewardUser(UUID userUUID, Set<@NotNull String> claimedRewards,
-                          long storedSeconds, long joinMillis) {
+    public UserData(@NotNull UUID userUUID, long storedSeconds,
+                    Set<@NotNull String> claimedRewards, long joinMillis) {
         this.userUUID = userUUID;
-        this.claimedRewards = claimedRewards;
         this.storedSeconds = storedSeconds;
+        this.claimedRewards = claimedRewards;
         this.joinMillis = joinMillis;
     }
 
-    public UUID getUserUUID() {
+    public @NotNull UUID getUserUUID() {
         return userUUID;
     }
 
@@ -52,7 +50,6 @@ public class TimeRewardUser {
     public long getJoinMillis() {
         return joinMillis;
     }
-
 
     /**
      * 获取玩家本次加入服务器的时间 ，即为 当前时间-加入时间。

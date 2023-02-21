@@ -1,28 +1,37 @@
 package cc.carm.plugin.timereward.manager;
 
+import cc.carm.lib.configuration.core.ConfigurationRoot;
+import cc.carm.lib.configuration.core.value.type.ConfiguredSection;
+import cc.carm.lib.configuration.core.value.type.ConfiguredValue;
 import cc.carm.lib.easyplugin.utils.MessageUtils;
 import cc.carm.plugin.timereward.Main;
 import cc.carm.plugin.timereward.TimeRewardAPI;
-import cc.carm.plugin.timereward.configuration.PluginConfig;
-import cc.carm.plugin.timereward.data.RewardContents;
-import cc.carm.plugin.timereward.data.TimeRewardUser;
+import cc.carm.plugin.timereward.conf.PluginConfig;
+import cc.carm.plugin.timereward.storage.RewardContents;
+import cc.carm.plugin.timereward.storage.UserData;
+import com.google.common.collect.ImmutableMap;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 public class RewardManager {
 
-    private BukkitRunnable rewardChecker;
+    protected final Map<String, RewardContents> rewards = new ConcurrentHashMap<>();
+    protected BukkitRunnable runnable;
 
-    public void initialize() {
-        this.rewardChecker = new BukkitRunnable() {
+    public RewardManager(Main main) {
+        this.runnable = new BukkitRunnable() {
             @Override
             public void run() {
                 if (Bukkit.getOnlinePlayers().isEmpty()) return;
@@ -31,25 +40,23 @@ public class RewardManager {
                     List<RewardContents> unclaimedRewards = getUnclaimedRewards(player);
                     if (unclaimedRewards.isEmpty()) continue;
 
-                    Main.getInstance().getScheduler().run(() -> unclaimedRewards.forEach(
+                    main.getScheduler().run(() -> unclaimedRewards.forEach(
                             // 在同步进程中为玩家发放奖励
                             unclaimedReward -> claimReward(player, unclaimedReward, false)
                     ));
                 }
-
             }
         };
-
-        this.rewardChecker.runTaskTimerAsynchronously(Main.getInstance(), 100L, 20L);
+        this.runnable.runTaskTimerAsynchronously(main, 100L, 20L);
     }
 
     public void shutdown() {
-        this.rewardChecker.cancel();
-        this.rewardChecker = null;
+        this.runnable.cancel();
+        this.runnable = null;
     }
 
-    public HashMap<String, RewardContents> readRewards(@NotNull ConfigurationSection section) {
-        HashMap<String, RewardContents> rewards = new HashMap<>();
+    public Map<String, RewardContents> readRewards(@NotNull ConfigurationSection section) {
+        Map<String, RewardContents> rewards = new HashMap<>();
         for (String rewardID : section.getKeys(false)) {
             ConfigurationSection rewardSection = section.getConfigurationSection(rewardID);
             if (rewardSection == null) continue;
@@ -69,20 +76,22 @@ public class RewardManager {
         return rewards;
     }
 
+    @Unmodifiable
+    public Map<String, RewardContents> getRewardsMap() {
+        return Collections.unmodifiableMap(rewards);
+    }
+
+    public @Nullable RewardContents getReward(String rewardID) {
+        return rewards.get(rewardID);
+    }
+
     public Map<String, RewardContents> listRewards() {
-        return new HashMap<>(getRewardsMap());
+        return ImmutableMap.copyOf(getRewardsMap());
     }
 
-    public RewardContents getReward(String rewardID) {
-        return getRewardsMap().get(rewardID);
-    }
-
-    protected HashMap<String, RewardContents> getRewardsMap() {
-        return PluginConfig.REWARDS.getOptional().orElse(new HashMap<>());
-    }
-
-    public List<RewardContents> getUnclaimedRewards(Player player) {
-        TimeRewardUser user = TimeRewardAPI.getUserManager().get(player);
+    @Unmodifiable
+    public @NotNull List<RewardContents> getUnclaimedRewards(@NotNull Player player) {
+        UserData user = TimeRewardAPI.getUserManager().getData(player);
         return listRewards().values().stream()
                 .filter(reward -> reward.isTimeEnough(user.getAllSeconds())) // 时间足够
                 .filter(reward -> !user.isClaimed(reward.getRewardID())) // 未曾领取
@@ -91,7 +100,7 @@ public class RewardManager {
     }
 
     public boolean claimReward(Player player, RewardContents reward, boolean check) {
-        TimeRewardUser user = TimeRewardAPI.getUserManager().get(player);
+        UserData user = TimeRewardAPI.getUserManager().getData(player);
         if (check && user.isClaimed(reward.getRewardID())) return false;
         if (check && !reward.isTimeEnough(user.getAllSeconds())) return false;
         if (check && !reward.checkPermission(player)) return false;
@@ -112,6 +121,5 @@ public class RewardManager {
     public boolean claimReward(Player player, RewardContents reward) {
         return claimReward(player, reward, true);
     }
-
 
 }

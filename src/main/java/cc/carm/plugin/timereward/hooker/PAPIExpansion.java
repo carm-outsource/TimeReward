@@ -1,8 +1,8 @@
 package cc.carm.plugin.timereward.hooker;
 
 import cc.carm.plugin.timereward.TimeRewardAPI;
-import cc.carm.plugin.timereward.data.RewardContents;
-import cc.carm.plugin.timereward.data.TimeRewardUser;
+import cc.carm.plugin.timereward.storage.RewardContents;
+import cc.carm.plugin.timereward.storage.UserData;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -59,7 +59,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
             return "Error Params";
         }
 
-        TimeRewardUser user = TimeRewardAPI.getUserManager().get(player);
+        UserData user = TimeRewardAPI.getUserManager().getData(player);
 
         switch (args[0].toLowerCase()) {
             case "time": {
