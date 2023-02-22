@@ -48,6 +48,9 @@ public class PluginMessages extends ConfigurationRoot {
 
         public static final ConfiguredMessageList<BaseComponent[]> ADMIN = list().defaults(
                 "&6&l在线奖励 &f管理员指令帮助",
+                "&8#&f claim &6[奖励ID]",
+                "&8-&7 为自己手动领取对应奖励。",
+                "&8-&7 若不填写奖励ID，则自动领取全部可领取的奖励。",
                 "&8#&f reload",
                 "&8-&7 重载插件配置文件。",
                 "&8#&f user &6<玩家>",
@@ -80,7 +83,7 @@ public class PluginMessages extends ConfigurationRoot {
     ).params("award").build();
 
     public static final ConfiguredMessageList<BaseComponent[]> NOT_CLAIMABLE = list().defaults(
-            "&c&l抱歉！&f但您暂时为满足领取奖励 &e%(award) &f的条件。"
+            "&c&l抱歉！&f但您暂时未满足领取奖励 &e%(award) &f的条件。"
     ).params("award").build();
 
     public static final ConfiguredMessageList<BaseComponent[]> NO_UNCLAIMED_REWARD = list().defaults(
@@ -129,7 +132,7 @@ public class PluginMessages extends ConfigurationRoot {
         ).build();
 
         public static final ConfiguredMessageList<BaseComponent[]> COMPLETE = list().defaults(
-                "&f配置文件重载完成！耗时 &d%(time)&fms，共加载了 &d(count) &f个奖励配置。"
+                "&f配置文件重载完成！耗时 &d%(time)&fms，共加载了 &d%(count) &f个奖励配置。"
         ).params("time", "count").build();
 
     }
