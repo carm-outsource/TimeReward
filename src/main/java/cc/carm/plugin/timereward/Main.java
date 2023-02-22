@@ -8,11 +8,11 @@ import cc.carm.lib.mineconfiguration.bukkit.MineConfiguration;
 import cc.carm.plugin.timereward.command.TimeRewardCommand;
 import cc.carm.plugin.timereward.conf.PluginConfig;
 import cc.carm.plugin.timereward.conf.PluginMessages;
-import cc.carm.plugin.timereward.storage.database.MySQLStorage;
 import cc.carm.plugin.timereward.hooker.PAPIExpansion;
 import cc.carm.plugin.timereward.listener.UserListener;
 import cc.carm.plugin.timereward.manager.RewardManager;
 import cc.carm.plugin.timereward.manager.UserManager;
+import cc.carm.plugin.timereward.storage.database.MySQLStorage;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 
@@ -22,7 +22,7 @@ public class Main extends EasyPlugin {
     protected ConfigurationProvider<?> configProvider;
     protected ConfigurationProvider<?> messageProvider;
 
-    protected MySQLStorage mySQLStorage;
+    protected MySQLStorage storage;
     protected UserManager userManager;
     protected RewardManager rewardManager;
 
@@ -43,9 +43,9 @@ public class Main extends EasyPlugin {
     @Override
     protected boolean initialize() {
         log("初始化数据管理器...");
-        this.mySQLStorage = new MySQLStorage();
+        this.storage = new MySQLStorage();
         try {
-            mySQLStorage.initialize();
+            storage.initialize();
         } catch (Exception e) {
             severe("初始化存储失败，请检查配置文件。");
             setEnabled(false);
@@ -61,7 +61,7 @@ public class Main extends EasyPlugin {
 
         log("加载奖励管理器...");
         this.rewardManager = new RewardManager(this);
-        log("加载了 " + this.rewardManager.listRewards().size() + " 个奖励配置。");
+        debug("加载了 " + this.rewardManager.listRewards().size() + " 个奖励配置。");
 
         log("注册监听器...");
         registerListener(new UserListener());
@@ -71,7 +71,7 @@ public class Main extends EasyPlugin {
 
         if (MessageUtils.hasPlaceholderAPI()) {
             log("注册变量...");
-            new PAPIExpansion(this).register();
+            new PAPIExpansion(this, "TimeReward").register();
         } else {
             log("未安装PlaceholderAPI，跳过变量注册...");
         }
@@ -128,7 +128,7 @@ public class Main extends EasyPlugin {
     }
 
     public static MySQLStorage getStorage() {
-        return getInstance().mySQLStorage;
+        return getInstance().storage;
     }
 
     public ConfigurationProvider<?> getConfigProvider() {

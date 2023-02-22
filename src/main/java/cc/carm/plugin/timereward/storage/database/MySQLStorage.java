@@ -62,8 +62,7 @@ public class MySQLStorage {
         return new UserData(uuid, playTime, claimedData);
     }
 
-    @Nullable
-    public Long loadPlayTime(@NotNull UUID uuid) throws Exception {
+    public long loadPlayTime(@NotNull UUID uuid) throws Exception {
         return DatabaseTables.USER_TIMES.createQuery()
                 .selectColumns("uuid", "time")
                 .addCondition("uuid", uuid).setLimit(1).build()
@@ -71,7 +70,7 @@ public class MySQLStorage {
                     ResultSet resultSet = query.getResultSet();
                     if (resultSet == null || !resultSet.next()) return 0L;
                     return resultSet.getLong("time");
-                });
+                }, 0L);
     }
 
     @NotNull

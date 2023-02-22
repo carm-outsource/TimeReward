@@ -1,88 +1,54 @@
 package cc.carm.plugin.timereward.hooker;
 
+import cc.carm.lib.easyplugin.papi.EasyPlaceholder;
+import cc.carm.lib.easyplugin.papi.handler.PlaceholderHandler;
 import cc.carm.plugin.timereward.TimeRewardAPI;
 import cc.carm.plugin.timereward.storage.RewardContents;
 import cc.carm.plugin.timereward.storage.UserData;
-import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.Collections;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
-public class PAPIExpansion extends PlaceholderExpansion {
+public class PAPIExpansion extends EasyPlaceholder {
 
-    private static final List<String> PLACEHOLDERS = Arrays.asList(
-            "%TimeReward_time%",
-            "%TimeReward_reward_<奖励ID>%",
-            "%TimeReward_claimed_<奖励ID>%"
-    );
+    public PAPIExpansion(@NotNull JavaPlugin plugin, @NotNull String rootIdentifier) {
+        super(plugin, rootIdentifier);
 
-    private final JavaPlugin plugin;
-
-    public PAPIExpansion(JavaPlugin plugin) {
-        this.plugin = plugin;
+        handle("time", userHandler(UserData::getAllSeconds));
+        handle("reward",
+                rewardHandler(RewardContents::getDisplayName),
+                Collections.singletonList("<奖励ID>")
+        );
+        handle("claimed", userHandler((user, args) -> {
+            if (args.length < 1) return "请填写奖励ID";
+            else return user.isClaimed(args[0]);
+        }), Collections.singletonList("<奖励ID>"));
+        handle("version", (player, args) -> getVersion());
     }
 
-    @Override
-    public @NotNull List<String> getPlaceholders() {
-        return PLACEHOLDERS;
+    protected <R> PlaceholderHandler userHandler(Function<UserData, R> userFunction) {
+        return userHandler((user, args) -> userFunction.apply(user));
     }
 
-    @Override
-    public boolean canRegister() {
-        return true;
+    protected <R> PlaceholderHandler userHandler(BiFunction<UserData, String[], R> userFunction) {
+        return (player, args) -> {
+            if (player == null || !player.isOnline()) return "加载中...";
+            return userFunction.apply(TimeRewardAPI.getUserManager().getData((Player) player), args);
+        };
     }
 
-    @Override
-    public @NotNull String getAuthor() {
-        return plugin.getDescription().getAuthors().toString();
-    }
-
-    @Override
-    public @NotNull String getIdentifier() {
-        return plugin.getDescription().getName();
-    }
-
-    @Override
-    public @NotNull String getVersion() {
-        return plugin.getDescription().getVersion();
-    }
-
-    @Override
-    public String onPlaceholderRequest(Player player, @NotNull String identifier) {
-        if (player == null) return "加载中...";
-        String[] args = identifier.split("_");
-
-        if (args.length < 1) {
-            return "Error Params";
-        }
-
-        UserData user = TimeRewardAPI.getUserManager().getData(player);
-
-        switch (args[0].toLowerCase()) {
-            case "time": {
-                return Long.toString(user.getAllSeconds());
-            }
-            case "reward": {
-                if (args.length < 2) return "请填写奖励ID";
-                String rewardName = args[1];
-                RewardContents contents = TimeRewardAPI.getRewardManager().getReward(rewardName);
-                if (contents == null) return "奖励不存在";
-                return contents.getDisplayName();
-            }
-            case "claimed": {
-                if (args.length < 2) return "请填写奖励ID";
-                return Boolean.toString(user.isClaimed(args[1]));
-            }
-            case "version": {
-                return getVersion();
-            }
-            default: {
-                return "参数错误";
-            }
-        }
+    protected <R> PlaceholderHandler rewardHandler(Function<RewardContents, R> function) {
+        return (player, args) -> {
+            if (args.length < 1) return "请填写奖励ID";
+            String rewardName = args[0];
+            RewardContents contents = TimeRewardAPI.getRewardManager().getReward(rewardName);
+            if (contents == null) return "奖励不存在";
+            return function.apply(contents);
+        };
     }
 
 }

@@ -3,11 +3,10 @@ package cc.carm.plugin.timereward.manager;
 import cc.carm.lib.easyplugin.utils.MessageUtils;
 import cc.carm.plugin.timereward.Main;
 import cc.carm.plugin.timereward.TimeRewardAPI;
+import cc.carm.plugin.timereward.conf.PluginConfig;
 import cc.carm.plugin.timereward.storage.RewardContents;
 import cc.carm.plugin.timereward.storage.UserData;
-import com.google.common.collect.ImmutableMap;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
@@ -15,15 +14,12 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 public class RewardManager {
 
-    protected final Map<String, RewardContents> rewards = new ConcurrentHashMap<>();
     protected BukkitRunnable runnable;
 
     public RewardManager(Main main) {
@@ -51,38 +47,16 @@ public class RewardManager {
         this.runnable = null;
     }
 
-    public Map<String, RewardContents> readRewards(@NotNull ConfigurationSection section) {
-        Map<String, RewardContents> rewards = new HashMap<>();
-        for (String rewardID : section.getKeys(false)) {
-            ConfigurationSection rewardSection = section.getConfigurationSection(rewardID);
-            if (rewardSection == null) continue;
-            long time = rewardSection.getLong("time", -1);
-            if (time <= 0) {
-                Main.severe("奖励 " + rewardID + " 的时间配置错误，请检查配置文件。");
-                continue;
-            }
-
-            rewards.put(rewardID, new RewardContents(
-                    rewardID, time,
-                    rewardSection.getString("name"),
-                    rewardSection.getString("permission"),
-                    rewardSection.getStringList("commands")
-            ));
-        }
-        return rewards;
-    }
-
-    @Unmodifiable
-    public Map<String, RewardContents> getRewardsMap() {
-        return Collections.unmodifiableMap(rewards);
+    protected Map<String, RewardContents> getRewards() {
+        return PluginConfig.REWARDS.getNotNull().getContents();
     }
 
     public @Nullable RewardContents getReward(String rewardID) {
-        return rewards.get(rewardID);
+        return getRewards().get(rewardID);
     }
 
     public Map<String, RewardContents> listRewards() {
-        return ImmutableMap.copyOf(getRewardsMap());
+        return Collections.unmodifiableMap(PluginConfig.REWARDS.getNotNull().getContents());
     }
 
     @Unmodifiable

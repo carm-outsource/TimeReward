@@ -48,7 +48,7 @@ public class TimeRewardCommand implements CommandExecutor, TabCompleter {
             }
 
             return true;
-        } else if (aim.equalsIgnoreCase("listUserData")) {
+        } else if (aim.equalsIgnoreCase("list")) {
             Collection<RewardContents> awards = TimeRewardAPI.getRewardManager().listRewards().values();
             PluginMessages.LIST.HEADER.send(sender, awards.size());
 
@@ -113,7 +113,7 @@ public class TimeRewardCommand implements CommandExecutor, TabCompleter {
                 case 1: {
                     allCompletes.add("reload");
                     allCompletes.add("user");
-                    allCompletes.add("listUserData");
+                    allCompletes.add("list");
                     if (sender instanceof Player) allCompletes.add("test");
 
                     break;
