@@ -1,7 +1,9 @@
 main: cc.carm.plugin.timereward.Main
 name: TimeReward
 version: ${project.version}
-author: CarmJos
+authors:
+  - CarmJos
+  - Yurinann
 website: ${project.url}
 description: ${project.description}
 
