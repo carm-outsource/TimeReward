@@ -61,7 +61,7 @@ public class Main extends EasyPlugin {
 
         log("加载奖励管理器...");
         this.rewardManager = new RewardManager(this);
-        debug("加载了 " + this.rewardManager.listRewards().size() + " 个奖励配置。");
+        log("成功加载了 " + this.rewardManager.listRewards().size() + " 个奖励配置。");
 
         log("注册监听器...");
         registerListener(new UserListener());
