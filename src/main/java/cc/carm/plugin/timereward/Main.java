@@ -5,7 +5,7 @@ import cc.carm.lib.easyplugin.EasyPlugin;
 import cc.carm.lib.easyplugin.updatechecker.GHUpdateChecker;
 import cc.carm.lib.easyplugin.utils.MessageUtils;
 import cc.carm.lib.mineconfiguration.bukkit.MineConfiguration;
-import cc.carm.plugin.timereward.command.TimeRewardCommand;
+import cc.carm.plugin.timereward.command.MainCommand;
 import cc.carm.plugin.timereward.conf.PluginConfig;
 import cc.carm.plugin.timereward.conf.PluginMessages;
 import cc.carm.plugin.timereward.hooker.PAPIExpansion;
@@ -67,7 +67,7 @@ public class Main extends EasyPlugin {
         registerListener(new UserListener());
 
         log("注册指令...");
-        registerCommand("TimeReward", new TimeRewardCommand());
+        registerCommand("TimeReward", new MainCommand(this));
 
         if (MessageUtils.hasPlaceholderAPI()) {
             log("注册变量...");

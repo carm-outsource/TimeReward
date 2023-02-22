@@ -3,6 +3,7 @@ package cc.carm.plugin.timereward.manager;
 import cc.carm.lib.easyplugin.utils.MessageUtils;
 import cc.carm.plugin.timereward.Main;
 import cc.carm.plugin.timereward.TimeRewardAPI;
+import cc.carm.plugin.timereward.conf.FunctionConfig;
 import cc.carm.plugin.timereward.conf.PluginConfig;
 import cc.carm.plugin.timereward.storage.RewardContents;
 import cc.carm.plugin.timereward.storage.UserData;
@@ -26,6 +27,7 @@ public class RewardManager {
         this.runnable = new BukkitRunnable() {
             @Override
             public void run() {
+                if (!FunctionConfig.AUTO_CLAIM.getNotNull()) return;
                 if (Bukkit.getOnlinePlayers().isEmpty()) return;
 
                 for (Player player : Bukkit.getOnlinePlayers()) {
@@ -61,21 +63,23 @@ public class RewardManager {
 
     @Unmodifiable
     public @NotNull List<RewardContents> getUnclaimedRewards(@NotNull Player player) {
-        UserData user = TimeRewardAPI.getUserManager().getData(player);
         return listRewards().values().stream()
-                .filter(reward -> reward.isTimeEnough(user.getAllSeconds())) // 时间足够
-                .filter(reward -> !user.isClaimed(reward.getRewardID())) // 未曾领取
-                .filter(reward -> reward.checkPermission(player)) // 满足权限
+                .filter(reward -> isClaimable(player, reward))
                 .collect(Collectors.toList());
     }
 
-    public boolean claimReward(Player player, RewardContents reward, boolean check) {
-        UserData user = TimeRewardAPI.getUserManager().getData(player);
-        if (check && user.isClaimed(reward.getRewardID())) return false;
-        if (check && !reward.isTimeEnough(user.getAllSeconds())) return false;
-        if (check && !reward.checkPermission(player)) return false;
 
-        user.addClaimedReward(reward.getRewardID());
+    public boolean isClaimable(Player player, RewardContents reward) {
+        UserData user = TimeRewardAPI.getUserManager().getData(player);
+        return !user.isClaimed(reward.getRewardID()) // 未曾领取
+                && reward.isTimeEnough(user.getAllSeconds()) // 时间足够
+                && reward.checkPermission(player); // 满足权限
+    }
+
+    public boolean claimReward(Player player, RewardContents reward, boolean check) {
+        if (check && !isClaimable(player, reward)) return false;
+
+        TimeRewardAPI.getUserManager().getData(player).addClaimedReward(reward.getRewardID());
         executeCommand(player, reward);
         return true;
     }

@@ -24,9 +24,7 @@ public class PluginConfig extends ConfigurationRoot {
     })
     public static final ConfigValue<Boolean> CHECK_UPDATE = ConfiguredValue.of(Boolean.class, true);
 
-    @HeaderComment("数据存储相关设定")
-    public static final class STORAGE extends ConfigurationRoot {
-    }
+    public static final Class<?> FUNCTIONS = FunctionConfig.class;
 
     @HeaderComment({"奖励相关设定，包含以下设定：",
             " [id] 配置键名即奖励ID，支持英文、数字与下划线。",

@@ -19,14 +19,27 @@ public class PAPIExpansion extends EasyPlaceholder {
         super(plugin, rootIdentifier);
 
         handle("time", userHandler(UserData::getAllSeconds));
+
         handle("reward",
                 rewardHandler(RewardContents::getDisplayName),
                 Collections.singletonList("<奖励ID>")
         );
+
         handle("claimed", userHandler((user, args) -> {
             if (args.length < 1) return "请填写奖励ID";
             else return user.isClaimed(args[0]);
         }), Collections.singletonList("<奖励ID>"));
+
+        handle("claimable", (offlinePlayer, args) -> {
+            if (offlinePlayer == null || !offlinePlayer.isOnline()) return "加载中...";
+            if (args.length < 1) return "请填写奖励ID";
+
+            RewardContents reward = TimeRewardAPI.getRewardManager().getReward(args[0]);
+            if (reward == null) return "奖励不存在";
+
+            return TimeRewardAPI.getRewardManager().isClaimable((Player) offlinePlayer, reward);
+        }, Collections.singletonList("<奖励ID>"));
+
         handle("version", (player, args) -> getVersion());
     }
 
