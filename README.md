@@ -51,7 +51,7 @@
 @ 管理指令 (TimeReward.admin)
 - 查看用户的在线时长信息与奖励领取情况。
 
-# list 
+# list
 @ 管理指令 (TimeReward.admin)
 - 列出所有奖励与条件。
 

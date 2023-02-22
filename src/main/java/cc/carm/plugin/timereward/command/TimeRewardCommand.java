@@ -30,9 +30,10 @@ public class TimeRewardCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, String[] args) {
+        if (sender instanceof Player && !sender.hasPermission("TimeReward.admin")) PluginMessages.NO_PERMISSION.send(sender);
         if (args.length < 1) return help(sender);
-        String aim = args[0];
 
+        String aim = args[0];
         if (aim.equalsIgnoreCase("reload")) {
             long s1 = System.currentTimeMillis();
             PluginMessages.RELOAD.START.send(sender);
@@ -41,7 +42,7 @@ public class TimeRewardCommand implements CommandExecutor, TabCompleter {
                 Main.getInstance().getConfigProvider().reload();
                 Main.getInstance().getMessageProvider().reload();
 
-                PluginMessages.RELOAD.COMPLETE.send(sender, System.currentTimeMillis() - s1);
+                PluginMessages.RELOAD.COMPLETE.send(sender, System.currentTimeMillis() - s1, TimeRewardAPI.getRewardManager().listRewards().size());
             } catch (Exception e) {
                 PluginMessages.RELOAD.ERROR.send(sender);
                 e.printStackTrace();
