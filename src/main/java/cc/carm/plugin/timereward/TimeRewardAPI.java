@@ -2,7 +2,6 @@ package cc.carm.plugin.timereward;
 
 import cc.carm.lib.easyplugin.utils.ColorParser;
 import cc.carm.lib.easyplugin.utils.MessageUtils;
-import cc.carm.plugin.timereward.manager.ConfigManager;
 import cc.carm.plugin.timereward.manager.RewardManager;
 import cc.carm.plugin.timereward.manager.UserManager;
 import org.bukkit.Bukkit;
@@ -14,10 +13,6 @@ public class TimeRewardAPI {
 
     public static UserManager getUserManager() {
         return Main.getInstance().userManager;
-    }
-
-    public static ConfigManager getConfigManager() {
-        return Main.getInstance().configManager;
     }
 
     public static RewardManager getRewardManager() {
@@ -38,6 +33,5 @@ public class TimeRewardAPI {
     private static String parseCommand(Player player, String command) {
         return MessageUtils.setPlaceholders(player, ColorParser.parse(command));
     }
-
 
 }

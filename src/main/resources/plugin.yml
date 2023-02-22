@@ -1,26 +1,24 @@
 main: cc.carm.plugin.timereward.Main
 name: TimeReward
-
 version: ${project.version}
-description: ${project.description}
+author: CarmJos
 website: ${project.url}
+description: ${project.description}
 
-authors:
-  - CarmJos
+api-version: 1.13
 
 softdepend:
   - PlaceholderAPI
 
-api-version: 1.13
+permissions:
+  "TimeReward.admin":
+    description: "在线自动领奖的管理员权限。"
+    default: op
 
 commands:
   "TimeReward":
     permission: "TimeReward.admin"
     description: "在线自动领奖的基础指令。"
     usage: "/TimeReward help"
-
-permissions:
-
-  "TimeReward.admin":
-    description: "在线自动领奖的管理员权限。"
-    default: op
+    aliases:
+      - tr
