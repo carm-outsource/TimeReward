@@ -23,9 +23,7 @@ public class PluginConfig extends ConfigurationRoot {
             "检查更新为异步操作，绝不会影响性能与使用体验。"
     })
     public static final ConfigValue<Boolean> CHECK_UPDATE = ConfiguredValue.of(Boolean.class, true);
-
-    public static final Class<?> FUNCTIONS = FunctionConfig.class;
-
+    
     @HeaderComment({"奖励相关设定，包含以下设定：",
             " [id] 配置键名即奖励ID，支持英文、数字与下划线。",
             "  | 确定后请不要更改，因为该键值用于存储玩家是否领取的数据",
@@ -36,7 +34,9 @@ public class PluginConfig extends ConfigurationRoot {
             " [permission] 领取奖励时后台执行的指令",
             "  | 支持PlaceholderAPI变量，指令中可以使用 %(name) 来获取该奖励的名称。",
             " [commands] 该奖励领取权限，可以不设置。",
-            "  | 若为空则所有人都可以领取；若不为空，则需要拥有该权限的玩家才能领取。"
+            "  | 若为空则所有人都可以领取；若不为空，则需要拥有该权限的玩家才能领取。",
+            " [auto] 该奖励是否自动领取，可以不设置，默认为true。",
+            "  | 若关闭自动领取，则需要玩家手动输入/tr claim 领取奖励。",
     })
     public static final ConfigValue<RewardContents.Group> REWARDS = ConfigValue.builder()
             .asValue(RewardContents.Group.class).fromSection()

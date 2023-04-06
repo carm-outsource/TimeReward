@@ -18,15 +18,18 @@ public class RewardContents {
     private final @Nullable String permission;
     private final @NotNull List<String> commands;
 
+    private final boolean auto;
+
 
     public RewardContents(@NotNull String id, long time,
                           @Nullable String name, @Nullable String permission,
-                          @NotNull List<String> commands) {
+                          @NotNull List<String> commands, boolean auto) {
         this.id = id;
         this.time = time;
         this.name = name;
         this.permission = permission;
         this.commands = commands;
+        this.auto = auto;
     }
 
     public String getRewardID() {
@@ -53,6 +56,10 @@ public class RewardContents {
         return commands;
     }
 
+    public boolean isAutoClaimed() {
+        return auto;
+    }
+
     public boolean checkPermission(@NotNull Player player) {
         return permission == null || player.hasPermission(permission);
     }
@@ -67,6 +74,7 @@ public class RewardContents {
         if (getName() != null) map.put("name", getName());
         if (getPermission() != null) map.put("permission", getPermission());
         map.put("commands", getCommands());
+        map.put("auto", auto);
         return map;
     }
 
@@ -81,7 +89,8 @@ public class RewardContents {
                 id, time,
                 section.getString("name"),
                 section.getString("permission"),
-                section.getStringList("commands")
+                section.getStringList("commands"),
+                section.getBoolean("auto", false)
         );
     }
 
@@ -89,7 +98,8 @@ public class RewardContents {
         return new RewardContents(
                 id, 7200,
                 "&f[初级奖励] &e总在线时长 2小时", "TimeReward.vip",
-                Collections.singletonList("say &f恭喜 &b%player_name% &f领取了奖励 &r%(name) &f！")
+                Collections.singletonList("say &f恭喜 &b%player_name% &f领取了奖励 &r%(name) &f！"),
+                true
         );
     }
 

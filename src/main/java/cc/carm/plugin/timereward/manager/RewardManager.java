@@ -3,7 +3,6 @@ package cc.carm.plugin.timereward.manager;
 import cc.carm.lib.easyplugin.utils.MessageUtils;
 import cc.carm.plugin.timereward.Main;
 import cc.carm.plugin.timereward.TimeRewardAPI;
-import cc.carm.plugin.timereward.conf.FunctionConfig;
 import cc.carm.plugin.timereward.conf.PluginConfig;
 import cc.carm.plugin.timereward.storage.RewardContents;
 import cc.carm.plugin.timereward.storage.UserData;
@@ -27,17 +26,18 @@ public class RewardManager {
         this.runnable = new BukkitRunnable() {
             @Override
             public void run() {
-                if (!FunctionConfig.AUTO_CLAIM.getNotNull()) return;
                 if (Bukkit.getOnlinePlayers().isEmpty()) return;
 
                 for (Player player : Bukkit.getOnlinePlayers()) {
-                    List<RewardContents> unclaimedRewards = getUnclaimedRewards(player);
-                    if (unclaimedRewards.isEmpty()) continue;
+                    List<RewardContents> rewards = getUnclaimedRewards(player).stream()
+                            .filter(RewardContents::isAutoClaimed)
+                            .collect(Collectors.toList());
+                    if (rewards.isEmpty()) continue;
 
-                    main.getScheduler().run(() -> unclaimedRewards.forEach(
-                            // 在同步进程中为玩家发放奖励
-                            unclaimedReward -> claimReward(player, unclaimedReward, false)
-                    ));
+                    main.getScheduler().run(() -> rewards.forEach(r -> {
+                        // 在同步进程中为玩家发放奖励
+                        claimReward(player, r, true); // 二次检查避免重复发奖
+                    }));
                 }
             }
         };
@@ -67,7 +67,6 @@ public class RewardManager {
                 .filter(reward -> isClaimable(player, reward))
                 .collect(Collectors.toList());
     }
-
 
     public boolean isClaimable(Player player, RewardContents reward) {
         UserData user = TimeRewardAPI.getUserManager().getData(player);

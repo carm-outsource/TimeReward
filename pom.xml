@@ -11,14 +11,14 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
         
-        <deps.easyplugin.version>1.5.2</deps.easyplugin.version>
-        <deps.easysql.version>0.4.6</deps.easysql.version>
-        <deps.mineconfig.version>2.4.0</deps.mineconfig.version>
+        <deps.easyplugin.version>1.5.5</deps.easyplugin.version>
+        <deps.easysql.version>0.4.7</deps.easysql.version>
+        <deps.mineconfig.version>2.5.1</deps.mineconfig.version>
     </properties>
 
     <groupId>cc.carm.plugin</groupId>
     <artifactId>timereward</artifactId>
-    <version>2.1.0</version>
+    <version>2.2.0</version>
 
     <name>TimeReward</name>
     <description>在线时长自动领奖插件，通过指令发放奖励，基于EasyPlugin实现。</description>
