@@ -19,7 +19,6 @@ permissions:
 
 commands:
   "TimeReward":
-    permission: "TimeReward.admin"
     description: "在线自动领奖的基础指令。"
     usage: "/TimeReward help"
     aliases:
