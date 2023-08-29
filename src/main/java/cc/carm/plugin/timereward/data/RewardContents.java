@@ -1,4 +1,4 @@
-package cc.carm.plugin.timereward.storage;
+package cc.carm.plugin.timereward.data;
 
 import cc.carm.lib.configuration.core.source.ConfigurationWrapper;
 import cc.carm.lib.easyplugin.utils.ColorParser;
@@ -116,44 +116,6 @@ public class RewardContents {
         return Objects.hash(id);
     }
 
-    public static final class Group {
-        final @NotNull Map<String, RewardContents> contents;
 
-        public Group(@NotNull Map<String, RewardContents> contents) {
-            this.contents = contents;
-        }
-
-        public @NotNull Map<String, RewardContents> getContents() {
-            return contents;
-        }
-
-        public Map<String, Object> serialize() {
-            Map<String, Object> map = new LinkedHashMap<>();
-            for (Map.Entry<String, RewardContents> entry : contents.entrySet()) {
-                map.put(entry.getKey(), entry.getValue().serialize());
-            }
-            return map;
-        }
-
-        public static Group parse(@NotNull ConfigurationWrapper<?> section) {
-            Map<String, RewardContents> rewards = new LinkedHashMap<>();
-            for (String rewardID : section.getKeys(false)) {
-                ConfigurationWrapper<?> rewardSection = section.getConfigurationSection(rewardID);
-                if (rewardSection == null) continue;
-
-                RewardContents c = RewardContents.parse(rewardID, rewardSection);
-                if (c == null) continue;
-                rewards.put(rewardID, c);
-            }
-            return new Group(rewards);
-        }
-
-        public static Group defaults() {
-            Map<String, RewardContents> rewards = new LinkedHashMap<>();
-            rewards.put("example", RewardContents.defaults("example"));
-            return new Group(rewards);
-        }
-
-    }
 
 }

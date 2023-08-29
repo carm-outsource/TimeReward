@@ -3,7 +3,7 @@ package cc.carm.plugin.timereward.storage.database;
 import cc.carm.lib.easysql.EasySQL;
 import cc.carm.lib.easysql.api.SQLManager;
 import cc.carm.plugin.timereward.Main;
-import cc.carm.plugin.timereward.storage.UserData;
+import cc.carm.plugin.timereward.data.UserData;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;

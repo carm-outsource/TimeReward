@@ -103,6 +103,8 @@
 
 若您觉得本插件做的不错，您可以捐赠支持我，感谢您成为开源项目的支持者！
 
+万分感谢 [egg_拿]() 赞助本项目的开发与维护！
+
 Many thanks to Jetbrains for kindly providing a license for me to work on this and other open-source projects.  
 [![](https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg)](https://www.jetbrains.com/?from=https://github.com/CarmJos/UserPrefix)
 

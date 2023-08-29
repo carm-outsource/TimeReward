@@ -1,4 +1,4 @@
-package cc.carm.plugin.timereward.storage;
+package cc.carm.plugin.timereward.data;
 
 import org.jetbrains.annotations.NotNull;
 

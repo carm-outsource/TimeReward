@@ -15,16 +15,21 @@ public enum DatabaseTables implements SQLTable {
     /**
      * 用于记录用户在线时间的表
      */
-    USER_TIMES(DatabaseConfig.TABLES.USER_TIMES, (table) -> {
+    USER_TIMES(DatabaseConfig.TABLES.USER_TIMES, table -> {
         table.addColumn("uuid", "CHAR(36) NOT NULL PRIMARY KEY"); // 用户的UUID
+        table.addColumn("date", "DATE NOT NULL"); // 日期
 
-        table.addColumn("time", "INT UNSIGNED NOT NULL DEFAULT 0"); // 用户在线时间(秒)
+        table.addColumn("day_time", "MEDIUMINT UNSIGNED NOT NULL DEFAULT 0"); // 用户日在线时间(秒)
+        table.addColumn("week_time", "MEDIUMINT UNSIGNED NOT NULL DEFAULT 0"); // 用户周在线时间(秒)
+        table.addColumn("month_time", "INT UNSIGNED NOT NULL DEFAULT 0"); // 用户月在线时间(秒)
+        table.addColumn("total_time", "INT UNSIGNED NOT NULL DEFAULT 0"); // 用户总在线时间(秒)
 
         table.addColumn("update",
                 "DATETIME NOT NULL " +
-                "DEFAULT CURRENT_TIMESTAMP " +
-                "ON UPDATE CURRENT_TIMESTAMP"
+                        "DEFAULT CURRENT_TIMESTAMP " +
+                        "ON UPDATE CURRENT_TIMESTAMP"
         );
+
     }),
 
     /**
@@ -35,12 +40,7 @@ public enum DatabaseTables implements SQLTable {
         table.addColumn("uuid", "CHAR(36) NOT NULL PRIMARY KEY"); // 用户的UUID 主键
 
         table.addColumn("value", "MEDIUMTEXT"); // 已领取的奖励ID
-
-        table.addColumn("update",
-                "DATETIME NOT NULL " +
-                "DEFAULT CURRENT_TIMESTAMP " +
-                "ON UPDATE CURRENT_TIMESTAMP"
-        );
+        table.addColumn("time", "DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP"); // 领取时间
     });
 
     private final Consumer<TableCreateBuilder> builder;

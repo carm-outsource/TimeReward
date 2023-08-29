@@ -4,7 +4,8 @@ import cc.carm.lib.configuration.core.ConfigurationRoot;
 import cc.carm.lib.configuration.core.annotation.HeaderComment;
 import cc.carm.lib.configuration.core.value.ConfigValue;
 import cc.carm.lib.configuration.core.value.type.ConfiguredValue;
-import cc.carm.plugin.timereward.storage.RewardContents;
+
+import java.time.DayOfWeek;
 
 public class PluginConfig extends ConfigurationRoot {
 
@@ -23,7 +24,14 @@ public class PluginConfig extends ConfigurationRoot {
             "检查更新为异步操作，绝不会影响性能与使用体验。"
     })
     public static final ConfigValue<Boolean> CHECK_UPDATE = ConfiguredValue.of(Boolean.class, true);
-    
+
+    @HeaderComment("周起始日，用于判断周度奖励的结算日期。")
+    public static final ConfigValue<DayOfWeek> WEEK_FIRST_DAY = ConfiguredValue.builderOf(DayOfWeek.class)
+            .from(Integer.class).serializeSource(i -> i).parseSource(i -> (Integer) i)
+            .parseValue((v, d) -> DayOfWeek.of(v))
+            .serializeValue(DayOfWeek::getValue)
+            .defaults(DayOfWeek.MONDAY).build();
+
     @HeaderComment({"奖励相关设定，包含以下设定：",
             " [id] 配置键名即奖励ID，支持英文、数字与下划线。",
             "  | 确定后请不要更改，因为该键值用于存储玩家是否领取的数据",
@@ -38,11 +46,11 @@ public class PluginConfig extends ConfigurationRoot {
             " [auto] 该奖励是否自动领取，可以不设置，默认为true。",
             "  | 若关闭自动领取，则需要玩家手动输入/tr claim 领取奖励。",
     })
-    public static final ConfigValue<RewardContents.Group> REWARDS = ConfigValue.builder()
-            .asValue(RewardContents.Group.class).fromSection()
-            .parseValue((v, d) -> RewardContents.Group.parse(v))
-            .serializeValue(RewardContents.Group::serialize)
-            .defaults(RewardContents.Group.defaults())
+    public static final ConfigValue<RewardsConfig.RewardGroup> REWARDS = ConfigValue.builder()
+            .asValue(RewardsConfig.RewardGroup.class).fromSection()
+            .parseValue((v, d) -> RewardsConfig.RewardGroup.parse(v))
+            .serializeValue(RewardsConfig.RewardGroup::serialize)
+            .defaults(RewardsConfig.RewardGroup.defaults())
             .build();
 
 }

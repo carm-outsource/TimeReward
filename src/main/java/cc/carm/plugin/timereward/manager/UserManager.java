@@ -2,7 +2,7 @@ package cc.carm.plugin.timereward.manager;
 
 import cc.carm.plugin.timereward.Main;
 import cc.carm.plugin.timereward.util.DataTaskRunner;
-import cc.carm.plugin.timereward.storage.UserData;
+import cc.carm.plugin.timereward.data.UserData;
 import cc.carm.plugin.timereward.storage.database.MySQLStorage;
 import com.google.common.collect.ImmutableMap;
 import org.bukkit.Bukkit;

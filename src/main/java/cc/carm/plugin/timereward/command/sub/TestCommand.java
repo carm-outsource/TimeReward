@@ -5,7 +5,7 @@ import cc.carm.lib.easyplugin.command.SubCommand;
 import cc.carm.plugin.timereward.TimeRewardAPI;
 import cc.carm.plugin.timereward.command.MainCommand;
 import cc.carm.plugin.timereward.conf.PluginMessages;
-import cc.carm.plugin.timereward.storage.RewardContents;
+import cc.carm.plugin.timereward.data.RewardContents;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;

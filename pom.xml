@@ -13,12 +13,12 @@
         
         <deps.easyplugin.version>1.5.5</deps.easyplugin.version>
         <deps.easysql.version>0.4.7</deps.easysql.version>
-        <deps.mineconfig.version>2.5.1</deps.mineconfig.version>
+        <deps.mineconfig.version>2.8.0</deps.mineconfig.version>
     </properties>
 
     <groupId>cc.carm.plugin</groupId>
     <artifactId>timereward</artifactId>
-    <version>2.2.1</version>
+    <version>3.0.0</version>
 
     <name>TimeReward</name>
     <description>在线时长自动领奖插件，通过指令发放奖励，基于EasyPlugin实现。</description>
