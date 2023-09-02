@@ -14,6 +14,9 @@ import java.util.Map;
         " [id] 配置键名即奖励ID，支持英文、数字与下划线。",
         "  | 确定后请不要更改，因为该键值用于存储玩家是否领取的数据",
         "  | 如果更改，原先领取过该奖励的玩家将会自动再领取一次！",
+        " [type] 奖励的类型序号",
+        "  | “0”代表总计时间奖励，“1”代表每日在线奖励，",
+        "  | “2”代表每周在线奖励，“3”代表每月在线奖励。",
         " [name] 奖励的显示名称，可以是任意字符串",
         "  | 可以在 commands 中使用 %(name) 来获取该奖励的名称",
         "  | 也可以使用变量 %TimeReward_reward_<奖励ID>% 来获取对应奖励的名称",
@@ -26,17 +29,11 @@ import java.util.Map;
 })
 public class RewardsConfig extends ConfigurationRoot {
 
-    @HeaderComment("每日在线时长的奖励")
-    public static final ConfigValue<RewardGroup> DAILY = create();
+    public static final ConfigValue<RewardsConfig.RewardGroup> REWARDS = create();
 
-    @HeaderComment("每周在线时长的奖励")
-    public static final ConfigValue<RewardGroup> WEEKLY = create();
-
-    @HeaderComment("每月在线时长的奖励")
-    public static final ConfigValue<RewardGroup> MONTHLY = create();
-
-    @HeaderComment("总在线时长的奖励")
-    public static final ConfigValue<RewardGroup> TOTAL = create();
+    public static Map<String, RewardContents> getContents() {
+        return REWARDS.getNotNull().getContents();
+    }
 
     private static ConfigValue<RewardGroup> create() {
         return ConfigValue.builder()

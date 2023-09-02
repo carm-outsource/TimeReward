@@ -1,12 +1,11 @@
 package cc.carm.plugin.timereward.command.sub;
 
 import cc.carm.lib.easyplugin.command.SubCommand;
-import cc.carm.plugin.timereward.Main;
 import cc.carm.plugin.timereward.TimeRewardAPI;
 import cc.carm.plugin.timereward.command.MainCommand;
 import cc.carm.plugin.timereward.conf.PluginMessages;
-import cc.carm.plugin.timereward.manager.RewardManager;
 import cc.carm.plugin.timereward.data.RewardContents;
+import cc.carm.plugin.timereward.manager.RewardManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -40,11 +39,8 @@ public class ClaimCommand extends SubCommand<MainCommand> {
                 return null;
             }
 
-            Main.getInstance().getScheduler().run(() -> unclaimedRewards.forEach(
-                    // 在同步进程中为玩家发放奖励
-                    unclaimedReward -> manager.claimReward(player, unclaimedReward, false)
-            ));
-
+            // 为玩家发放奖励
+            manager.claimRewards(player, unclaimedRewards, false);
         } else {
 
             RewardContents reward = manager.getReward(rewardID);
@@ -57,8 +53,16 @@ public class ClaimCommand extends SubCommand<MainCommand> {
                 PluginMessages.NOT_CLAIMABLE.send(sender, reward.getDisplayName());
                 return null;
             }
-            Main.getInstance().getScheduler().run(() -> manager.claimReward(player, reward, false));
+
+            // 为玩家发放奖励
+            manager.claimReward(player, reward, false);
         }
         return null;
     }
+
+    @Override
+    public boolean hasPermission(@NotNull CommandSender sender) {
+        return sender.hasPermission("TimeReward.claim");
+    }
+    
 }

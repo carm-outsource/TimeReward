@@ -3,21 +3,38 @@ package cc.carm.plugin.timereward.data;
 import cc.carm.plugin.timereward.conf.PluginConfig;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.Temporal;
 import java.time.temporal.TemporalField;
 import java.time.temporal.WeekFields;
 
 public class TimeRecord {
 
+    public static TimeRecord empty() {
+        return new TimeRecord(LocalDate.now(), 0, 0, 0, 0);
+    }
+
+
     protected final @NotNull LocalDate date;
 
-    protected final int daily;
-    protected final int weekly;
-    protected final int monthly;
+    protected final @NotNull Duration daily;
+    protected final @NotNull Duration weekly;
+    protected final @NotNull Duration monthly;
 
-    protected final int total;
+    protected final @NotNull Duration total;
 
-    public TimeRecord(@NotNull LocalDate date, int daily, int weekly, int monthly, int total) {
+    public TimeRecord(@NotNull LocalDate date, long daily, long weekly, long monthly, long total) {
+        this(date,
+                Duration.ofSeconds(daily), Duration.ofSeconds(weekly),
+                Duration.ofSeconds(monthly), Duration.ofSeconds(total)
+        );
+    }
+
+    public TimeRecord(@NotNull LocalDate date,
+                      @NotNull Duration daily, @NotNull Duration weekly,
+                      @NotNull Duration monthly, @NotNull Duration total) {
         this.date = date;
         this.daily = daily;
         this.weekly = weekly;
@@ -29,16 +46,20 @@ public class TimeRecord {
         return date;
     }
 
-    public int getDailyTime() {
-        return isDayUpdated() ? 0 : daily;
+    public @NotNull Duration getDailyTime() {
+        return daily;
     }
 
-    public int getWeeklyTime() {
-        return isWeekUpdated() ? 0 : weekly;
+    public @NotNull Duration getWeeklyTime() {
+        return weekly;
     }
 
-    public int getMonthlyTime() {
-        return isMonthUpdated() ? 0 : monthly;
+    public @NotNull Duration getMonthlyTime() {
+        return monthly;
+    }
+
+    public @NotNull Duration getTotalTime() {
+        return total;
     }
 
     public boolean isDayUpdated() {
@@ -47,9 +68,7 @@ public class TimeRecord {
 
     public boolean isWeekUpdated() {
         if (!isDayUpdated()) return false; // Same day always same week
-
-        TemporalField woy = WeekFields.of(PluginConfig.WEEK_FIRST_DAY.getNotNull(), 4).weekOfWeekBasedYear();
-        return getDate().get(woy) != LocalDate.now().get(woy);
+        return !isSameWeek(LocalDate.now(), getDate());
     }
 
     public boolean isMonthUpdated() {
@@ -59,5 +78,36 @@ public class TimeRecord {
         return LocalDate.now().getMonth().compareTo(getDate().getMonth()) > 0;
     }
 
+    public static boolean isSameWeek(Temporal a, Temporal b) {
+        TemporalField woy = WeekFields.of(PluginConfig.WEEK_FIRST_DAY.getNotNull(), 4).weekOfWeekBasedYear();
+        return a.get(woy) == b.get(woy);
+    }
 
+    public static boolean isSameMonth(LocalDate a, LocalDate b) {
+        return a.getMonth().equals(b.getMonth());
+    }
+
+    public static LocalDateTime getTodayStart() {
+        return LocalDate.now().atTime(0, 0);
+    }
+
+    public static LocalDateTime getThisWeekStart() {
+        TemporalField woy = WeekFields.of(PluginConfig.WEEK_FIRST_DAY.getNotNull(), 4).weekOfWeekBasedYear();
+        return LocalDate.now().with(woy, 1).atTime(0, 0);
+    }
+
+    public static LocalDateTime getThisMonthStart() {
+        return LocalDate.now().withDayOfMonth(1).atTime(0, 0);
+    }
+
+    @Override
+    public String toString() {
+        return "TimeRecord{" +
+                "date=" + date +
+                ", daily=" + daily +
+                ", weekly=" + weekly +
+                ", monthly=" + monthly +
+                ", total=" + total +
+                '}';
+    }
 }

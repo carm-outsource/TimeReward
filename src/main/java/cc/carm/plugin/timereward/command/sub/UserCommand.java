@@ -5,13 +5,15 @@ import cc.carm.lib.easyplugin.command.SubCommand;
 import cc.carm.plugin.timereward.TimeRewardAPI;
 import cc.carm.plugin.timereward.command.MainCommand;
 import cc.carm.plugin.timereward.conf.PluginMessages;
-import cc.carm.plugin.timereward.data.UserData;
+import cc.carm.plugin.timereward.data.IntervalType;
+import cc.carm.plugin.timereward.user.UserRewardData;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class UserCommand extends SubCommand<MainCommand> {
@@ -30,11 +32,21 @@ public class UserCommand extends SubCommand<MainCommand> {
             return null;
         }
 
-        UserData user = TimeRewardAPI.getUserManager().getData(player);
+        UserRewardData user = TimeRewardAPI.getUserManager().get(player);
         PluginMessages.USER_INFO.send(sender,
-                player.getName(), user.getAllSeconds(),
-                user.getClaimedRewards().size(), String.join("&8, &f", user.getClaimedRewards())
+                player.getName(),
+                user.getOnlineDuration(IntervalType.DAILY).getSeconds(),
+                user.getOnlineDuration(IntervalType.WEEKLY).getSeconds(),
+                user.getOnlineDuration(IntervalType.MONTHLY).getSeconds(),
+                user.getOnlineDuration(IntervalType.TOTAL).getSeconds(),
+                user.getClaimedRewards().size()
         );
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        user.getClaimedRewards().forEach((id, time) -> {
+            PluginMessages.USER_RECEIVED.send(sender, id, time.format(formatter));
+        });
+
         return null;
     }
 

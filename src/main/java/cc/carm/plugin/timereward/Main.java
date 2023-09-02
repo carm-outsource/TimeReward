@@ -8,6 +8,7 @@ import cc.carm.lib.mineconfiguration.bukkit.MineConfiguration;
 import cc.carm.plugin.timereward.command.MainCommand;
 import cc.carm.plugin.timereward.conf.PluginConfig;
 import cc.carm.plugin.timereward.conf.PluginMessages;
+import cc.carm.plugin.timereward.conf.RewardsConfig;
 import cc.carm.plugin.timereward.hooker.PAPIExpansion;
 import cc.carm.plugin.timereward.listener.UserListener;
 import cc.carm.plugin.timereward.manager.RewardManager;
@@ -15,12 +16,14 @@ import cc.carm.plugin.timereward.manager.UserManager;
 import cc.carm.plugin.timereward.storage.database.MySQLStorage;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Entity;
 
 public class Main extends EasyPlugin {
     private static Main instance;
 
     protected ConfigurationProvider<?> configProvider;
     protected ConfigurationProvider<?> messageProvider;
+    protected ConfigurationProvider<?> rewardProvider;
 
     protected MySQLStorage storage;
     protected UserManager userManager;
@@ -38,6 +41,9 @@ public class Main extends EasyPlugin {
 
         this.messageProvider = MineConfiguration.from(this, "messages.yml");
         this.messageProvider.initialize(PluginMessages.class);
+
+        this.rewardProvider = MineConfiguration.from(this, "rewards.yml");
+        this.rewardProvider.initialize(RewardsConfig.class);
     }
 
     @Override
@@ -53,10 +59,10 @@ public class Main extends EasyPlugin {
         }
 
         log("加载用户管理器...");
-        this.userManager = new UserManager();
-        if (Bukkit.getOnlinePlayers().size() > 0) {
+        this.userManager = new UserManager(this);
+        if (!Bukkit.getOnlinePlayers().isEmpty()) {
             log("加载现有用户数据...");
-            this.userManager.loadAll();
+            this.userManager.loadOnline(Entity::getUniqueId);
         }
 
         log("加载奖励管理器...");
@@ -139,4 +145,7 @@ public class Main extends EasyPlugin {
         return messageProvider;
     }
 
+    public ConfigurationProvider<?> getRewardProvider() {
+        return rewardProvider;
+    }
 }

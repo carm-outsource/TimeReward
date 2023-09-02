@@ -24,6 +24,7 @@ public class ReloadCommand extends SubCommand<MainCommand> {
         try {
             Main.getInstance().getConfigProvider().reload();
             Main.getInstance().getMessageProvider().reload();
+            Main.getInstance().getRewardProvider().reload();
 
             PluginMessages.RELOAD.COMPLETE.send(sender, System.currentTimeMillis() - s1, TimeRewardAPI.getRewardManager().listRewards().size());
         } catch (Exception e) {

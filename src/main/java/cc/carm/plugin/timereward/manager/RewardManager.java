@@ -3,9 +3,9 @@ package cc.carm.plugin.timereward.manager;
 import cc.carm.lib.easyplugin.utils.MessageUtils;
 import cc.carm.plugin.timereward.Main;
 import cc.carm.plugin.timereward.TimeRewardAPI;
-import cc.carm.plugin.timereward.conf.PluginConfig;
+import cc.carm.plugin.timereward.conf.RewardsConfig;
 import cc.carm.plugin.timereward.data.RewardContents;
-import cc.carm.plugin.timereward.data.UserData;
+import cc.carm.plugin.timereward.user.UserRewardData;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -13,9 +13,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 public class RewardManager {
@@ -34,10 +34,8 @@ public class RewardManager {
                             .collect(Collectors.toList());
                     if (rewards.isEmpty()) continue;
 
-                    main.getScheduler().run(() -> rewards.forEach(r -> {
-                        // 在同步进程中为玩家发放奖励
-                        claimReward(player, r, true); // 二次检查避免重复发奖
-                    }));
+                    //为玩家发放奖励
+                    claimRewards(player, rewards, true); // 二次检查避免重复发奖
                 }
             }
         };
@@ -50,7 +48,7 @@ public class RewardManager {
     }
 
     protected Map<String, RewardContents> getRewards() {
-        return PluginConfig.REWARDS.getNotNull().getContents();
+        return RewardsConfig.getContents();
     }
 
     public @Nullable RewardContents getReward(String rewardID) {
@@ -58,7 +56,7 @@ public class RewardManager {
     }
 
     public Map<String, RewardContents> listRewards() {
-        return Collections.unmodifiableMap(PluginConfig.REWARDS.getNotNull().getContents());
+        return Collections.unmodifiableMap(RewardsConfig.getContents());
     }
 
     @Unmodifiable
@@ -69,18 +67,48 @@ public class RewardManager {
     }
 
     public boolean isClaimable(Player player, RewardContents reward) {
-        UserData user = TimeRewardAPI.getUserManager().getData(player);
-        return !user.isClaimed(reward.getRewardID()) // 未曾领取
-                && reward.isTimeEnough(user.getAllSeconds()) // 时间足够
+        UserRewardData user = TimeRewardAPI.getUserManager().get(player);
+
+        return !user.isClaimed(reward) // 未曾领取
+                && user.isTimeEnough(reward)// 时间足够
                 && reward.checkPermission(player); // 满足权限
     }
 
-    public boolean claimReward(Player player, RewardContents reward, boolean check) {
-        if (check && !isClaimable(player, reward)) return false;
+    public CompletableFuture<Boolean> claimReward(Player player, RewardContents reward, boolean check) {
+        return claimRewards(player, Collections.singletonList(reward), check);
+    }
 
-        TimeRewardAPI.getUserManager().getData(player).addClaimedReward(reward.getRewardID());
-        executeCommand(player, reward);
-        return true;
+    public CompletableFuture<Boolean> claimRewards(Player player, Collection<RewardContents> rewards, boolean check) {
+        Set<RewardContents> contents = rewards.stream()
+                .filter(r -> !check || isClaimable(player, r))
+                .collect(Collectors.toSet());
+
+        Map<String, LocalDateTime> map = new LinkedHashMap<>();
+        contents.forEach(reward -> map.put(reward.getRewardID(), LocalDateTime.now()));
+
+        return Main.getInstance().supplyAsync(() -> {
+            try {
+
+                UserRewardData user = TimeRewardAPI.getUserManager().get(player);
+                Main.getStorage().addClaimedData(player.getUniqueId(), map);
+                contents.forEach(user::addClaimedReward);
+
+                return true;
+            } catch (Exception ex) {
+                Main.severe("为玩家 " + player.getName() + " 领取奖励时发生错误。");
+                ex.printStackTrace();
+                return false;
+            }
+        }).thenCompose(result -> {
+            if (result) {
+                return Main.getInstance().supplySync(() -> {
+                    rewards.forEach(reward -> executeCommand(player, reward));
+                    return true;
+                });
+            } else {
+                return CompletableFuture.completedFuture(false);
+            }
+        });
     }
 
     public void executeCommand(Player player, RewardContents reward) {
@@ -89,10 +117,6 @@ public class RewardManager {
                 reward.getCommands(), "%(name)", reward.getDisplayName()
         );
         TimeRewardAPI.executeCommands(player, finalCommands); // 执行命令
-    }
-
-    public boolean claimReward(Player player, RewardContents reward) {
-        return claimReward(player, reward, true);
     }
 
 }

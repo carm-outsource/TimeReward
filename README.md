@@ -44,7 +44,7 @@
 
 ```text
 # claim [奖励ID]
-@ 玩家指令
+@ 玩家指令 (TimeReward.claim)
 - 为自己手动领取对应奖励。
 - 若不填写奖励ID，则自动领取全部可领取的奖励。
 
@@ -72,8 +72,9 @@
 变量如下:
 
 ```text
-# %TimeReward_time%
-- 得到玩家总共的在线时长(秒)。
+# %TimeReward_time_<时间类型>%
+- 得到玩家的在线时长(秒)。
+- 时间类型可选 TOTAL, DAILY, WEEKLY, MONTHLY 。
 
 # %TimeReward_reward_<奖励ID>%
 - 得到某个奖励配置的名称。

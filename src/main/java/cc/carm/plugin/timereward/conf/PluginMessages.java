@@ -91,14 +91,19 @@ public class PluginMessages extends ConfigurationRoot {
     ).build();
 
     public static final ConfiguredMessageList<BaseComponent[]> USER_INFO = list().defaults(
-            "&f玩家 &6%(player) &f已在线&e%(time)&f秒，共领取了 &e%(amount)&f 次奖励。",
-            "&7已领取的奖励列表如下：&r%(rewards) &7。"
-    ).params("player", "time", "amount", "rewards").build();
+            "&f玩家 &6%(player) &f的在线时间数据：",
+            "&f  本日在线 &e%(daily)&f秒，本周在线 &e%(weekly)&f秒，",
+            "&f  本月在线 &e%(monthly)&f秒，累积在线 &e%(total)&f秒。",
+            "&7已领取了 &f%(amount) &7种奖励，如下所示："
+    ).params("player", "daily", "weekly", "monthly", "total", "amount").build();
+
+    public static final ConfiguredMessageList<BaseComponent[]> USER_RECEIVED = list().defaults(
+            "&7- &e%(reward) &7于 &f%(time) &7领取"
+    ).params("reward", "time").build();
 
     public static final ConfiguredMessageList<BaseComponent[]> COMMAND_LIST = list().defaults(
             "&f正在执行奖励 %(award) 的指令列表..."
     ).params("award").build();
-
 
     public static class LIST extends ConfigurationRoot {
 
@@ -109,15 +114,17 @@ public class PluginMessages extends ConfigurationRoot {
         public static final ConfiguredMessageList<BaseComponent[]> OBJECT = list().defaults(
                 "&8# &f%(id)",
                 "&8- &7奖励名称 &f%(name)",
+                "&8- &7奖励类型 &f%(type)",
                 "&8- &7领取时间 &f&e%(time)&f秒"
-        ).params("id", "name", "time").build();
+        ).params("id", "name", "type", "time").build();
 
         public static final ConfiguredMessageList<BaseComponent[]> OBJECT_PERM = list().defaults(
                 "&8# &f%(id)",
                 "&8- &7奖励名称 &f%(name)",
+                "&8- &7奖励类型 &f%(type)",
                 "&8- &7领取时间 &f&e%(time)&f秒",
                 "&8- &7需要权限 &f%(permission)"
-        ).params("id", "name", "time", "permission").build();
+        ).params("id", "name", "type", "time", "permission").build();
 
     }
 

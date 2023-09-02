@@ -11,6 +11,9 @@ import java.util.List;
 
 public class TimeRewardAPI {
 
+    private TimeRewardAPI() {
+    }
+
     public static UserManager getUserManager() {
         return Main.getInstance().userManager;
     }
@@ -18,7 +21,7 @@ public class TimeRewardAPI {
     public static RewardManager getRewardManager() {
         return Main.getInstance().rewardManager;
     }
-    
+
     public static void executeCommands(Player player, List<String> commands) {
         if (commands == null || commands.isEmpty()) return;
         for (String command : commands) {

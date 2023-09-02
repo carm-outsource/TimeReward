@@ -16,6 +16,9 @@ permissions:
   "TimeReward.admin":
     description: "在线自动领奖的管理员权限。"
     default: op
+  "TimeReward.claim":
+    description: "使用领奖指令的权限，若关闭则玩家不得直接通过指令领取奖励。"
+    default: true
 
 commands:
   "TimeReward":

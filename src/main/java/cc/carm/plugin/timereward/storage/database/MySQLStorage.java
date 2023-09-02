@@ -3,18 +3,19 @@ package cc.carm.plugin.timereward.storage.database;
 import cc.carm.lib.easysql.EasySQL;
 import cc.carm.lib.easysql.api.SQLManager;
 import cc.carm.plugin.timereward.Main;
-import cc.carm.plugin.timereward.data.UserData;
+import cc.carm.plugin.timereward.data.TimeRecord;
+import cc.carm.plugin.timereward.user.UserRewardData;
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.LinkedHashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class MySQLStorage {
     protected static final Gson GSON = new Gson();
@@ -56,62 +57,85 @@ public class MySQLStorage {
         return sqlManager;
     }
 
-    public @Nullable UserData loadData(@NotNull UUID uuid) throws Exception {
-        Long playTime = loadPlayTime(uuid);
-        Set<String> claimedData = loadClaimedData(uuid);
-        return new UserData(uuid, playTime, claimedData);
+    public @Nullable UserRewardData loadData(@NotNull UUID uuid) throws Exception {
+        TimeRecord recordDate = loadTimeRecord(uuid);
+        System.out.println(recordDate.toString());
+        Map<String, LocalDateTime> claimedData = loadClaimedData(uuid);
+        return new UserRewardData(uuid, recordDate, claimedData);
     }
 
-    public long loadPlayTime(@NotNull UUID uuid) throws Exception {
+    public TimeRecord loadTimeRecord(@NotNull UUID uuid) throws Exception {
         return DatabaseTables.USER_TIMES.createQuery()
-                .selectColumns("uuid", "time")
                 .addCondition("uuid", uuid).setLimit(1).build()
-                .executeFunction((query) -> {
-                    ResultSet resultSet = query.getResultSet();
-                    if (resultSet == null || !resultSet.next()) return 0L;
-                    return resultSet.getLong("time");
-                }, 0L);
+                .executeFunction(query -> {
+                    ResultSet rs = query.getResultSet();
+                    if (rs == null || !rs.next()) return TimeRecord.empty();
+
+                    LocalDate date = rs.getDate("date").toLocalDate();
+                    long daily = rs.getLong("daily_time");
+                    long weekly = rs.getLong("weekly_time");
+                    long monthly = rs.getLong("monthly_time");
+                    long total = rs.getLong("total_time");
+
+                    return new TimeRecord(date, daily, weekly, monthly, total);
+                }, TimeRecord.empty());
     }
 
     @NotNull
-    public Set<String> loadClaimedData(@NotNull UUID uuid) throws Exception {
+    public Map<String, LocalDateTime> loadClaimedData(@NotNull UUID uuid) throws Exception {
         return DatabaseTables.USER_CLAIMED.createQuery()
-                .selectColumns("uuid", "value")
-                .addCondition("uuid", uuid).setLimit(1).build()
+                .addCondition("uuid", uuid).build()
                 .executeFunction((query) -> {
-                    ResultSet resultSet = query.getResultSet();
-                    if (!resultSet.next()) return new LinkedHashSet<>();
-                    String json = resultSet.getString("value");
-                    if (json == null) return new LinkedHashSet<>();
-                    JsonElement element = PARSER.parse(json);
-                    if (!element.isJsonArray()) return new LinkedHashSet<>();
-                    Set<String> ids = new LinkedHashSet<>();
-                    for (JsonElement e : element.getAsJsonArray()) {
-                        ids.add(e.getAsString());
+                    ResultSet rs = query.getResultSet();
+                    Map<String, LocalDateTime> map = new LinkedHashMap<>();
+
+                    while (rs.next()) {
+                        String rewardID = rs.getString("reward");
+                        LocalDateTime time = rs.getTimestamp("time").toLocalDateTime();
+                        map.put(rewardID, time);
                     }
-                    return ids;
-                }, new LinkedHashSet<>());
+
+                    return map;
+                }, new LinkedHashMap<>());
     }
 
-    public void saveClaimedData(@NotNull UUID uuid, @Nullable Set<String> claimedRewards) throws Exception {
-        if (claimedRewards != null) {
-            DatabaseTables.USER_CLAIMED.createReplace()
-                    .setColumnNames("uuid", "value")
-                    .setParams(uuid.toString(), GSON.toJson(claimedRewards))
-                    .execute();
+    public void addClaimedData(@NotNull UUID uuid, String reward) throws Exception {
+        HashMap<String, LocalDateTime> time = new HashMap<>();
+        time.put(reward, LocalDateTime.now());
+        addClaimedData(uuid, time);
+    }
+
+    public void addClaimedData(@NotNull UUID uuid, @NotNull Map<String, LocalDateTime> data) throws Exception {
+        if (!data.isEmpty()) {
+            List<Object[]> values = data.entrySet().stream()
+                    .map(entry -> new Object[]{uuid.toString(), entry.getKey(), entry.getValue()})
+                    .collect(Collectors.toList());
+            DatabaseTables.USER_CLAIMED.createReplaceBatch()
+                    .setColumnNames("uuid", "reward", "time")
+                    .setAllParams(values).execute();
         } else {
             DatabaseTables.USER_CLAIMED.createDelete()
                     .addCondition("uuid", uuid).setLimit(1)
-                    .build()
-                    .execute();
+                    .build().execute();
         }
     }
 
-    public void savePlayTime(@NotNull UUID uuid, long time) throws Exception {
-        DatabaseTables.USER_TIMES.createReplace()
-                .setColumnNames("uuid", "time")
-                .setParams(uuid.toString(), time)
-                .execute();
+    public void savePlayTime(@NotNull UUID uuid, @Nullable TimeRecord newRecord) throws Exception {
+        if (newRecord != null) {
+            DatabaseTables.USER_TIMES.createReplace()
+                    .setColumnNames("uuid", "date", "daily_time", "weekly_time", "monthly_time", "total_time")
+                    .setParams(
+                            uuid.toString(), newRecord.getDate(),
+                            newRecord.getDailyTime().getSeconds(),
+                            newRecord.getWeeklyTime().getSeconds(),
+                            newRecord.getMonthlyTime().getSeconds(),
+                            newRecord.getTotalTime().getSeconds()
+                    ).execute();
+        } else {
+            DatabaseTables.USER_TIMES.createDelete()
+                    .addCondition("uuid", uuid).setLimit(1)
+                    .build().execute();
+        }
     }
 
 }

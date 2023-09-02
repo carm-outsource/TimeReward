@@ -13,18 +13,20 @@ public class RewardContents {
 
     public final @NotNull String id;
 
+    public final @NotNull IntervalType type;
     private final long time;
+
     private final @Nullable String name;
     private final @Nullable String permission;
     private final @NotNull List<String> commands;
 
     private final boolean auto;
 
-
-    public RewardContents(@NotNull String id, long time,
+    public RewardContents(@NotNull String id, @NotNull IntervalType type, long time,
                           @Nullable String name, @Nullable String permission,
                           @NotNull List<String> commands, boolean auto) {
         this.id = id;
+        this.type = type;
         this.time = time;
         this.name = name;
         this.permission = permission;
@@ -32,8 +34,12 @@ public class RewardContents {
         this.auto = auto;
     }
 
-    public String getRewardID() {
+    public @NotNull String getRewardID() {
         return id;
+    }
+
+    public @NotNull IntervalType getType() {
+        return type;
     }
 
     public long getTime() {
@@ -64,13 +70,11 @@ public class RewardContents {
         return permission == null || player.hasPermission(permission);
     }
 
-    public boolean isTimeEnough(long requireSeconds) {
-        return requireSeconds >= getTime();
-    }
 
     public Map<String, Object> serialize() {
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("time", getTime());
+        map.put("type", getType().getID());
         if (getName() != null) map.put("name", getName());
         if (getPermission() != null) map.put("permission", getPermission());
         map.put("commands", getCommands());
@@ -85,8 +89,14 @@ public class RewardContents {
             return null;
         }
 
+        IntervalType intervalType = IntervalType.parse(Objects.toString(section.get("type")));
+        if (intervalType == null) {
+            Main.severe("奖励 " + id + " 的类型配置错误，请检查配置文件。");
+            return null;
+        }
+
         return new RewardContents(
-                id, time,
+                id, intervalType, time,
                 section.getString("name"),
                 section.getString("permission"),
                 section.getStringList("commands"),
@@ -96,7 +106,7 @@ public class RewardContents {
 
     public static RewardContents defaults(String id) {
         return new RewardContents(
-                id, 7200,
+                id, IntervalType.TOTAL, 7200,
                 "&f[初级奖励] &e总在线时长 2小时", "TimeReward.vip",
                 Collections.singletonList("say &f恭喜 &b%player_name% &f领取了奖励 &r%(name) &f！"),
                 true
@@ -115,7 +125,6 @@ public class RewardContents {
     public int hashCode() {
         return Objects.hash(id);
     }
-
 
 
 }

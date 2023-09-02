@@ -4,6 +4,7 @@ import cc.carm.lib.configuration.core.value.ConfigValue;
 import cc.carm.lib.easysql.api.SQLManager;
 import cc.carm.lib.easysql.api.SQLTable;
 import cc.carm.lib.easysql.api.builder.TableCreateBuilder;
+import cc.carm.lib.easysql.api.enums.IndexType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,9 +20,9 @@ public enum DatabaseTables implements SQLTable {
         table.addColumn("uuid", "CHAR(36) NOT NULL PRIMARY KEY"); // 用户的UUID
         table.addColumn("date", "DATE NOT NULL"); // 日期
 
-        table.addColumn("day_time", "MEDIUMINT UNSIGNED NOT NULL DEFAULT 0"); // 用户日在线时间(秒)
-        table.addColumn("week_time", "MEDIUMINT UNSIGNED NOT NULL DEFAULT 0"); // 用户周在线时间(秒)
-        table.addColumn("month_time", "INT UNSIGNED NOT NULL DEFAULT 0"); // 用户月在线时间(秒)
+        table.addColumn("daily_time", "MEDIUMINT UNSIGNED NOT NULL DEFAULT 0"); // 用户日在线时间(秒)
+        table.addColumn("weekly_time", "MEDIUMINT UNSIGNED NOT NULL DEFAULT 0"); // 用户周在线时间(秒)
+        table.addColumn("monthly_time", "INT UNSIGNED NOT NULL DEFAULT 0"); // 用户月在线时间(秒)
         table.addColumn("total_time", "INT UNSIGNED NOT NULL DEFAULT 0"); // 用户总在线时间(秒)
 
         table.addColumn("update",
@@ -36,11 +37,12 @@ public enum DatabaseTables implements SQLTable {
      * 用于记录用户奖励领取情况的表
      */
     USER_CLAIMED(DatabaseConfig.TABLES.USER_CLAIMED, (table) -> {
-        table.addAutoIncrementColumn("id", false, true); // 排序键
-        table.addColumn("uuid", "CHAR(36) NOT NULL PRIMARY KEY"); // 用户的UUID 主键
+        table.addColumn("uuid", "CHAR(36) NOT NULL"); // 用户的UUID 主键
+        table.addColumn("reward", "VARCHAR(64) NOT NULL"); // 已领取的奖励ID
 
-        table.addColumn("value", "MEDIUMTEXT"); // 已领取的奖励ID
         table.addColumn("time", "DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP"); // 领取时间
+
+        table.setIndex(IndexType.PRIMARY_KEY, "pk_timereward_user", "uuid", "reward");
     });
 
     private final Consumer<TableCreateBuilder> builder;
