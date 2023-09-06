@@ -4,6 +4,7 @@ import cc.carm.lib.easyplugin.utils.MessageUtils;
 import cc.carm.plugin.timereward.Main;
 import cc.carm.plugin.timereward.TimeRewardAPI;
 import cc.carm.plugin.timereward.conf.RewardsConfig;
+import cc.carm.plugin.timereward.data.IntervalType;
 import cc.carm.plugin.timereward.data.RewardContents;
 import cc.carm.plugin.timereward.user.UserRewardData;
 import org.bukkit.Bukkit;
@@ -13,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -67,11 +69,25 @@ public class RewardManager {
     }
 
     public boolean isClaimable(Player player, RewardContents reward) {
-        UserRewardData user = TimeRewardAPI.getUserManager().get(player);
+        if (!reward.checkPermission(player)) return false; // 满足权限
 
-        return !user.isClaimed(reward) // 未曾领取
-                && user.isTimeEnough(reward)// 时间足够
-                && reward.checkPermission(player); // 满足权限
+        UserRewardData user = TimeRewardAPI.getUserManager().get(player);
+        IntervalType intervalType = reward.getType();
+        LocalDateTime lastClaimed = user.getClaimedDate(reward);
+
+        if (reward.isLoop()) { // 循环奖励
+            if (lastClaimed == null || intervalType.isPeriodChanged(lastClaimed)) {
+                // 无上次领取记录或上次领取的时间不在一个周期内，则直接判断时间是否足够一次循环领取的时间
+                return user.getOnlineDuration(intervalType).getSeconds() > reward.getTime();
+            } else {
+                // 有上次领取记录，且在同一周期内，则直接判断相隔时间是否满足一个周期
+                return Duration.between(lastClaimed, LocalDateTime.now()).getSeconds() > reward.getTime();
+            }
+        } else { // 非循环奖励
+            if (lastClaimed == null || intervalType.isPeriodChanged(lastClaimed)) { // 无上次领取记录，则直接判断时间是否足够领取的时间
+                return user.getOnlineDuration(intervalType).getSeconds() > reward.getTime();
+            } else return false; // 有同一周期内的领取记录，则玩家不得重复领取了
+        }
     }
 
     public CompletableFuture<Boolean> claimReward(Player player, RewardContents reward, boolean check) {
@@ -91,7 +107,7 @@ public class RewardManager {
 
                 UserRewardData user = TimeRewardAPI.getUserManager().get(player);
                 Main.getStorage().addClaimedData(player.getUniqueId(), map);
-                contents.forEach(user::addClaimedReward);
+                contents.forEach(user::updateClaimed);
 
                 return true;
             } catch (Exception ex) {

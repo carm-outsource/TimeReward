@@ -5,6 +5,7 @@ import cc.carm.plugin.timereward.data.IntervalType;
 import cc.carm.plugin.timereward.data.RewardContents;
 import cc.carm.plugin.timereward.data.TimeRecord;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -64,21 +65,20 @@ public class UserRewardData extends UserData<UUID> {
         return getOnlineDuration(reward.getType()).getSeconds() >= reward.getTime();
     }
 
-
     public @NotNull Map<String, LocalDateTime> getClaimedRewards() {
         return claimedRewards;
     }
 
-    public boolean isClaimed(@NotNull RewardContents reward) {
-        LocalDateTime claimedDate = claimedRewards.get(reward.getRewardID());
-        if (claimedDate == null) return false;
-        return !reward.getType().isReclaimable(claimedDate);
+    public @Nullable LocalDateTime getClaimedDate(@NotNull RewardContents reward) {
+        return claimedRewards.get(reward.getRewardID());
     }
 
-    public boolean addClaimedReward(@NotNull RewardContents reward) {
-        if (isClaimed(reward)) return false; // 已经领取过了
+    public boolean isClaimed(@NotNull RewardContents reward) {
+        return claimedRewards.containsKey(reward.getRewardID());
+    }
+
+    public void updateClaimed(@NotNull RewardContents reward) {
         this.claimedRewards.put(reward.getRewardID(), LocalDateTime.now());
-        return true;
     }
 
 }

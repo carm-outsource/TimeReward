@@ -30,8 +30,7 @@ public class LockedRewardData extends UserRewardData {
     }
 
     @Override
-    public boolean addClaimedReward(@NotNull RewardContents reward) {
-        return false;
+    public void updateClaimed(@NotNull RewardContents reward) {
     }
 
 }

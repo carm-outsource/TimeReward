@@ -60,14 +60,14 @@ public enum IntervalType {
     );
 
     private final int id;
-    private final @NotNull Predicate<LocalDateTime> reclaimPreficate;
+    private final @NotNull Predicate<LocalDateTime> periodChangePredicate;
     private final @NotNull BiFunction<TimeRecord, LocalDateTime, Duration> calculator;
 
     IntervalType(int id,
-                 @NotNull Predicate<LocalDateTime> reclaimablePredicate,
+                 @NotNull Predicate<LocalDateTime> periodChangePredicate,
                  @NotNull BiFunction<TimeRecord, LocalDateTime, Duration> calculator) {
         this.id = id;
-        this.reclaimPreficate = reclaimablePredicate;
+        this.periodChangePredicate = periodChangePredicate;
         this.calculator = calculator;
     }
 
@@ -79,16 +79,16 @@ public enum IntervalType {
         return calculator;
     }
 
-    public @NotNull Predicate<LocalDateTime> getReclaimablePredicate() {
-        return reclaimPreficate;
+    public @NotNull Predicate<LocalDateTime> getPreiodChangePredicate() {
+        return periodChangePredicate;
     }
 
     public Duration calculate(@NotNull TimeRecord timeRecord, @NotNull LocalDateTime joinTime) {
         return calculator.apply(timeRecord, joinTime);
     }
 
-    public boolean isReclaimable(@NotNull LocalDateTime claimedDate) {
-        return reclaimPreficate.test(claimedDate);
+    public boolean isPeriodChanged(@NotNull LocalDateTime claimedDate) {
+        return periodChangePredicate.test(claimedDate);
     }
 
     public static IntervalType parse(String input) {

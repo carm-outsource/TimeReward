@@ -15,6 +15,7 @@ public class RewardContents {
 
     public final @NotNull IntervalType type;
     private final long time;
+    private final boolean loop;
 
     private final @Nullable String name;
     private final @Nullable String permission;
@@ -22,12 +23,13 @@ public class RewardContents {
 
     private final boolean auto;
 
-    public RewardContents(@NotNull String id, @NotNull IntervalType type, long time,
+    public RewardContents(@NotNull String id, @NotNull IntervalType type, long time, boolean loop,
                           @Nullable String name, @Nullable String permission,
                           @NotNull List<String> commands, boolean auto) {
         this.id = id;
         this.type = type;
         this.time = time;
+        this.loop = loop;
         this.name = name;
         this.permission = permission;
         this.commands = commands;
@@ -40,6 +42,10 @@ public class RewardContents {
 
     public @NotNull IntervalType getType() {
         return type;
+    }
+
+    public boolean isLoop() {
+        return loop;
     }
 
     public long getTime() {
@@ -70,11 +76,11 @@ public class RewardContents {
         return permission == null || player.hasPermission(permission);
     }
 
-
     public Map<String, Object> serialize() {
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("time", getTime());
         map.put("type", getType().getID());
+        map.put("loop", isLoop());
         if (getName() != null) map.put("name", getName());
         if (getPermission() != null) map.put("permission", getPermission());
         map.put("commands", getCommands());
@@ -96,17 +102,15 @@ public class RewardContents {
         }
 
         return new RewardContents(
-                id, intervalType, time,
-                section.getString("name"),
-                section.getString("permission"),
-                section.getStringList("commands"),
-                section.getBoolean("auto", false)
+                id, intervalType, time, section.getBoolean("loop", false),
+                section.getString("name"), section.getString("permission"),
+                section.getStringList("commands"), section.getBoolean("auto", false)
         );
     }
 
     public static RewardContents defaults(String id) {
         return new RewardContents(
-                id, IntervalType.TOTAL, 7200,
+                id, IntervalType.TOTAL, 7200, false,
                 "&f[初级奖励] &e总在线时长 2小时", "TimeReward.vip",
                 Collections.singletonList("say &f恭喜 &b%player_name% &f领取了奖励 &r%(name) &f！"),
                 true

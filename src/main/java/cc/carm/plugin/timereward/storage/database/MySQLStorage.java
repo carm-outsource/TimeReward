@@ -59,7 +59,6 @@ public class MySQLStorage {
 
     public @Nullable UserRewardData loadData(@NotNull UUID uuid) throws Exception {
         TimeRecord recordDate = loadTimeRecord(uuid);
-        System.out.println(recordDate.toString());
         Map<String, LocalDateTime> claimedData = loadClaimedData(uuid);
         return new UserRewardData(uuid, recordDate, claimedData);
     }
@@ -85,7 +84,7 @@ public class MySQLStorage {
     public Map<String, LocalDateTime> loadClaimedData(@NotNull UUID uuid) throws Exception {
         return DatabaseTables.USER_CLAIMED.createQuery()
                 .addCondition("uuid", uuid).build()
-                .executeFunction((query) -> {
+                .executeFunction(query -> {
                     ResultSet rs = query.getResultSet();
                     Map<String, LocalDateTime> map = new LinkedHashMap<>();
 
