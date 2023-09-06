@@ -33,14 +33,14 @@ public class UserCommand extends SubCommand<MainCommand> {
         }
 
         UserRewardData user = TimeRewardAPI.getUserManager().get(player);
-        PluginMessages.USER_INFO.send(sender,
+        PluginMessages.USER_INFO.prepare(
                 player.getName(),
                 user.getOnlineDuration(IntervalType.DAILY).getSeconds(),
                 user.getOnlineDuration(IntervalType.WEEKLY).getSeconds(),
                 user.getOnlineDuration(IntervalType.MONTHLY).getSeconds(),
                 user.getOnlineDuration(IntervalType.TOTAL).getSeconds(),
                 user.getClaimedRewards().size()
-        );
+        ).to(sender);
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         user.getClaimedRewards().forEach((id, time) -> {

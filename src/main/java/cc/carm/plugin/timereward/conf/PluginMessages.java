@@ -8,7 +8,6 @@ import cc.carm.lib.mineconfiguration.bukkit.value.ConfiguredMessageList;
 import de.themoep.minedown.MineDown;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
@@ -29,7 +28,7 @@ public class PluginMessages extends ConfigurationRoot {
         return ConfiguredMessageList.create(getParser())
                 .whenSend((sender, message) -> {
                     if (sender instanceof ConsoleCommandSender) {
-                        message.forEach(m -> sender.sendMessage(TextComponent.toLegacyText(m)));
+                        message.forEach(m -> sender.sendMessage(BaseComponent.toLegacyText(m)));
                         return;
                     }
                     Player player = (Player) sender;

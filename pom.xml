@@ -11,9 +11,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
 
-        <deps.easyplugin.version>1.5.7</deps.easyplugin.version>
+        <deps.easyplugin.version>1.5.8</deps.easyplugin.version>
         <deps.easysql.version>0.4.7</deps.easysql.version>
-        <deps.mineconfig.version>2.8.0</deps.mineconfig.version>
+        <deps.mineconfig.version>2.8.2</deps.mineconfig.version>
     </properties>
 
     <groupId>cc.carm.plugin</groupId>

@@ -24,14 +24,15 @@ public class ListCommand extends SubCommand<MainCommand> {
 
         for (RewardContents reward : awards) {
             if (reward.getPermission() != null) {
-                PluginMessages.LIST.OBJECT_PERM.send(sender,
+                PluginMessages.LIST.OBJECT_PERM.prepare(
                         reward.getRewardID(), reward.getDisplayName(), reward.getType().name(),
                         reward.getTime(), reward.getPermission()
-                );
+                ).to(sender);
             } else {
-                PluginMessages.LIST.OBJECT.send(sender,
-                        reward.getRewardID(), reward.getDisplayName(), reward.getType().name(), reward.getTime()
-                );
+                PluginMessages.LIST.OBJECT_PERM.prepare(
+                        reward.getRewardID(), reward.getDisplayName(),
+                        reward.getType().name(), reward.getTime()
+                ).to(sender);
             }
         }
         return null;
