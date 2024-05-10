@@ -19,13 +19,40 @@ public class PAPIExpansion extends EasyPlaceholder {
     public PAPIExpansion(@NotNull JavaPlugin plugin, @NotNull String rootIdentifier) {
         super(plugin, rootIdentifier);
 
-        handle("time", userHandler((user, args) -> {
+        handle("seconds", userHandler((user, args) -> {
             if (args.length < 1) return "请填写时间类型";
             IntervalType type = IntervalType.parse(args[0]);
 
             if (type == null) return "时间类型不存在";
 
             return user.getOnlineDuration(type).getSeconds();
+        }), Collections.singletonList("<时间类型>"), "time");
+
+        handle("minutes", userHandler((user, args) -> {
+            if (args.length < 1) return "请填写时间类型";
+            IntervalType type = IntervalType.parse(args[0]);
+
+            if (type == null) return "时间类型不存在";
+
+            return user.getOnlineDuration(type).toMinutes();
+        }), Collections.singletonList("<时间类型>"));
+
+        handle("hours", userHandler((user, args) -> {
+            if (args.length < 1) return "请填写时间类型";
+            IntervalType type = IntervalType.parse(args[0]);
+
+            if (type == null) return "时间类型不存在";
+
+            return user.getOnlineDuration(type).toHours();
+        }), Collections.singletonList("<时间类型>"));
+
+        handle("days", userHandler((user, args) -> {
+            if (args.length < 1) return "请填写时间类型";
+            IntervalType type = IntervalType.parse(args[0]);
+
+            if (type == null) return "时间类型不存在";
+
+            return user.getOnlineDuration(type).toDays();
         }), Collections.singletonList("<时间类型>"));
 
         handle("reward",
