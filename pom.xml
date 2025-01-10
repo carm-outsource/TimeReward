@@ -191,7 +191,7 @@
                 <configuration>
                     <filesets>
                         <fileset>
-                            <directory>${project.basedir}/asset/</directory>
+                            <directory>${project.basedir}/.asset/</directory>
                             <useDefaultExcludes>true</useDefaultExcludes>
                             <includes>
                                 <include>**/*</include>

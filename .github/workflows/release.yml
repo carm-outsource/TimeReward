@@ -37,5 +37,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: asset/*.jar
+          asset_path: ".asset/*.jar"
           asset_content_type: application/java-archive
