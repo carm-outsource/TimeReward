@@ -38,13 +38,15 @@ public class UserManager extends UserDataManager<UUID, UserRewardData> {
 
         MySQLStorage storage = Main.getStorage();
 
+        @Nullable UserRewardData current = loadData(data.getUserUUID()); // 考虑读取时间差，优先利用数据库的当前数据计算
+        TimeRecord oldRecord = current == null ? data.getTimeRecord() : current.getTimeRecord();
+
         // 只需要保存游玩时间数据，领取数据已经实时保存了
-        LocalDate date = LocalDate.now();
-        Duration daily = data.getOnlineDuration(IntervalType.DAILY);
-        Duration weekly = data.getOnlineDuration(IntervalType.WEEKLY);
-        Duration monthly = data.getOnlineDuration(IntervalType.MONTHLY);
-        Duration total = data.getOnlineDuration(IntervalType.TOTAL);
-        TimeRecord newRecord = new TimeRecord(date, daily, weekly, monthly, total);
+        Duration daily = IntervalType.DAILY.calculate(oldRecord, data.getJoinTime());
+        Duration weekly = IntervalType.WEEKLY.calculate(oldRecord, data.getJoinTime());
+        Duration monthly = IntervalType.MONTHLY.calculate(oldRecord, data.getJoinTime());
+        Duration total = IntervalType.TOTAL.calculate(oldRecord, data.getJoinTime());
+        TimeRecord newRecord = new TimeRecord(LocalDate.now(), daily, weekly, monthly, total);
 
         storage.savePlayTime(data.getUserUUID(), newRecord);
     }

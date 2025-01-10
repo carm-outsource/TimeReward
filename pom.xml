@@ -18,7 +18,7 @@
 
     <groupId>cc.carm.plugin</groupId>
     <artifactId>timereward</artifactId>
-    <version>3.1.1</version>
+    <version>3.1.2</version>
 
     <name>TimeReward</name>
     <description>在线时长自动领奖插件，通过指令发放奖励，基于EasyPlugin实现。</description>
