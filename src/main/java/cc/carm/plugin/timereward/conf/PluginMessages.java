@@ -79,6 +79,10 @@ public interface PluginMessages extends Configuration {
             "&f玩家 &e%(player) &f并不在线。"
     ).params("player").build();
 
+    ConfiguredMessage<BaseComponent[]> LOADING = list().defaults(
+            "&e&l请稍候... &f您的在线数据正在加载中。"
+    ).params("player").build();
+
     ConfiguredMessage<BaseComponent[]> NOT_EXISTS = list().defaults(
             "&f奖励 &e%(award) &f并不存在。"
     ).params("award").build();

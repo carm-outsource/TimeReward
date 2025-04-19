@@ -10,50 +10,21 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.Duration;
 import java.util.Collections;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.ToLongFunction;
 
 public class PAPIExpansion extends EasyPlaceholder {
 
     public PAPIExpansion(@NotNull JavaPlugin plugin, @NotNull String rootIdentifier) {
         super(plugin, rootIdentifier);
 
-        handle("seconds", userHandler((user, args) -> {
-            if (args.length < 1) return "请填写时间类型";
-            IntervalType type = IntervalType.parse(args[0]);
-
-            if (type == null) return "时间类型不存在";
-
-            return user.getOnlineDuration(type).getSeconds();
-        }), Collections.singletonList("<时间类型>"), "time");
-
-        handle("minutes", userHandler((user, args) -> {
-            if (args.length < 1) return "请填写时间类型";
-            IntervalType type = IntervalType.parse(args[0]);
-
-            if (type == null) return "时间类型不存在";
-
-            return user.getOnlineDuration(type).toMinutes();
-        }), Collections.singletonList("<时间类型>"));
-
-        handle("hours", userHandler((user, args) -> {
-            if (args.length < 1) return "请填写时间类型";
-            IntervalType type = IntervalType.parse(args[0]);
-
-            if (type == null) return "时间类型不存在";
-
-            return user.getOnlineDuration(type).toHours();
-        }), Collections.singletonList("<时间类型>"));
-
-        handle("days", userHandler((user, args) -> {
-            if (args.length < 1) return "请填写时间类型";
-            IntervalType type = IntervalType.parse(args[0]);
-
-            if (type == null) return "时间类型不存在";
-
-            return user.getOnlineDuration(type).toDays();
-        }), Collections.singletonList("<时间类型>"));
+        handle("seconds", timeHandler(Duration::getSeconds), Collections.singletonList("<时间类型>"), "time");
+        handle("minutes", timeHandler(Duration::toMinutes), Collections.singletonList("<时间类型>"));
+        handle("hours", timeHandler(Duration::toHours), Collections.singletonList("<时间类型>"));
+        handle("days", timeHandler(Duration::toDays), Collections.singletonList("<时间类型>"));
 
         handle("reward",
                 rewardHandler(RewardContents::getDisplayName),
@@ -89,8 +60,19 @@ public class PAPIExpansion extends EasyPlaceholder {
     protected <R> PlaceholderHandler userHandler(BiFunction<UserRewardData, String[], R> userFunction) {
         return (player, args) -> {
             if (player == null || !player.isOnline()) return "加载中...";
-            return userFunction.apply(TimeRewardAPI.getUserManager().get((Player) player), args);
+            UserRewardData data = TimeRewardAPI.getUserManager().get((Player) player);
+            if (data == null) return "加载中...";
+            return userFunction.apply(data, args);
         };
+    }
+
+    protected PlaceholderHandler timeHandler(ToLongFunction<Duration> timeFunction) {
+        return userHandler((user, args) -> {
+            if (args.length < 1) return "请填写时间类型";
+            IntervalType type = IntervalType.parse(args[0]);
+            if (type == null) return "时间类型不存在";
+            return timeFunction.applyAsLong(user.getOnlineDuration(type));
+        });
     }
 
     protected <R> PlaceholderHandler rewardHandler(Function<RewardContents, R> function) {

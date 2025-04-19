@@ -72,6 +72,8 @@ public class RewardManager {
         if (!reward.checkPermission(player)) return false; // 满足权限
 
         UserRewardData user = TimeRewardAPI.getUserManager().get(player);
+        if (user == null) return false; // 玩家数据加载中
+
         IntervalType intervalType = reward.getType();
         LocalDateTime lastClaimed = user.getClaimedDate(reward);
 
@@ -106,6 +108,8 @@ public class RewardManager {
             try {
 
                 UserRewardData user = TimeRewardAPI.getUserManager().get(player);
+                if (user == null) return false; // 玩家数据加载中
+                
                 Main.getStorage().addClaimedData(player.getUniqueId(), map);
                 contents.forEach(user::updateClaimed);
 

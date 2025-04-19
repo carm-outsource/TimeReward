@@ -23,8 +23,8 @@ public class UserManager extends UserDataManager<UUID, UserRewardData> {
         super(plugin);
     }
 
-    public @NotNull UserRewardData get(Player player) {
-        return get(player.getUniqueId());
+    public @Nullable UserRewardData get(Player player) {
+        return getNullable(player.getUniqueId());
     }
 
     @Override

@@ -17,6 +17,7 @@ import cc.carm.plugin.timereward.storage.database.MySQLStorage;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 
@@ -30,6 +31,8 @@ public class Main extends EasyPlugin {
     protected MySQLStorage storage;
     protected UserManager userManager;
     protected RewardManager rewardManager;
+
+    protected BukkitRunnable autoSaveTask;
 
     public Main() {
         instance = this;
@@ -96,11 +99,32 @@ public class Main extends EasyPlugin {
             info("已禁用检查更新，跳过。");
         }
 
+        if (PluginConfig.AUTO_SAVE.resolve() > 0) {
+            long period = PluginConfig.AUTO_SAVE.resolve() * 20L;
+            this.autoSaveTask = new BukkitRunnable() {
+                int i = 0;
+
+                @Override
+                public void run() {
+                    i = i == Integer.MAX_VALUE ? 0 : i + 1;
+                    debugging("第" + i + "次自动保存用户在线数据...");
+                    userManager.saveAll();
+                }
+            };
+            this.autoSaveTask.runTaskTimerAsynchronously(this, period, period);
+        }
+
         return true;
     }
 
     @Override
     protected void shutdown() {
+
+        if (this.autoSaveTask != null && !this.autoSaveTask.isCancelled()) {
+            this.autoSaveTask.cancel();
+            this.autoSaveTask = null;
+        }
+
         info("终止奖励发放进程...");
         this.rewardManager.shutdown();
 

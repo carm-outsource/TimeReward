@@ -72,9 +72,12 @@
 变量如下:
 
 ```text
-# %TimeReward_time_<时间类型>%
-- 得到玩家的在线时长(秒)。
+# %TimeReward_<单位>_<时间类型>%
+- 得到玩家的在线时长。
+- 单位可选 seconds, minutes, hours, days.
 - 时间类型可选 TOTAL, DAILY, WEEKLY, MONTHLY 。
+
+
 
 # %TimeReward_reward_<奖励ID>%
 - 得到某个奖励配置的名称。

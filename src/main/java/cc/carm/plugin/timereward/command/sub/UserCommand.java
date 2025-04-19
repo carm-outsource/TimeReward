@@ -33,6 +33,11 @@ public class UserCommand extends SubCommand<MainCommand> {
         }
 
         UserRewardData user = TimeRewardAPI.getUserManager().get(player);
+        if (user == null) {
+            PluginMessages.LOADING.sendTo(sender, args[0]);
+            return null;
+        }
+
         PluginMessages.USER_INFO.prepare(
                 player.getName(),
                 user.getOnlineDuration(IntervalType.DAILY).getSeconds(),
