@@ -1,16 +1,17 @@
 package cc.carm.plugin.timereward.conf;
 
-import cc.carm.lib.configuration.core.ConfigurationRoot;
-import cc.carm.lib.configuration.core.annotation.HeaderComment;
-import cc.carm.lib.configuration.core.source.ConfigurationWrapper;
-import cc.carm.lib.configuration.core.value.ConfigValue;
+import cc.carm.lib.configuration.Configuration;
+import cc.carm.lib.configuration.annotation.ConfigPath;
+import cc.carm.lib.configuration.annotation.HeaderComments;
+import cc.carm.lib.configuration.source.section.ConfigureSection;
+import cc.carm.lib.configuration.value.standard.ConfiguredValue;
 import cc.carm.plugin.timereward.data.RewardContents;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-@HeaderComment({"奖励相关设定，包含以下设定：",
+@HeaderComments({"奖励相关设定，包含以下设定：",
         " [id] 配置键名即奖励ID，支持英文、数字与下划线。",
         "  | 确定后请不要更改，因为该键值用于存储玩家是否领取的数据",
         "  | 如果更改，原先领取过该奖励的玩家将会自动再领取一次！",
@@ -33,24 +34,21 @@ import java.util.Map;
         " [auto] 该奖励是否自动领取，可以不设置，默认为true。",
         "  | 若关闭自动领取，则需要玩家手动输入/tr claim 领取奖励。",
 })
-public class RewardsConfig extends ConfigurationRoot {
+@ConfigPath(root = true)
+public interface RewardsConfig extends Configuration {
 
-    public static final ConfigValue<RewardsConfig.RewardGroup> REWARDS = create();
+    ConfiguredValue<RewardGroup> REWARDS = ConfiguredValue.builderOf(RewardGroup.class)
+            .fromSection()
+            .parse((v, d) -> RewardGroup.parse(d))
+            .serialize(RewardGroup::serialize)
+            .defaults(RewardGroup.defaults())
+            .build();
 
-    public static Map<String, RewardContents> getContents() {
+    static Map<String, RewardContents> getContents() {
         return REWARDS.getNotNull().getContents();
     }
 
-    private static ConfigValue<RewardGroup> create() {
-        return ConfigValue.builder()
-                .asValue(RewardGroup.class).fromSection()
-                .parseValue((v, d) -> RewardGroup.parse(v))
-                .serializeValue(RewardGroup::serialize)
-                .defaults(RewardGroup.defaults())
-                .build();
-    }
-
-    public static final class RewardGroup {
+    final class RewardGroup {
         final @NotNull Map<String, RewardContents> contents;
 
         public RewardGroup(@NotNull Map<String, RewardContents> contents) {
@@ -69,10 +67,10 @@ public class RewardsConfig extends ConfigurationRoot {
             return map;
         }
 
-        public static RewardGroup parse(@NotNull ConfigurationWrapper<?> section) {
+        public static RewardGroup parse(@NotNull ConfigureSection section) {
             Map<String, RewardContents> rewards = new LinkedHashMap<>();
             for (String rewardID : section.getKeys(false)) {
-                ConfigurationWrapper<?> rewardSection = section.getConfigurationSection(rewardID);
+                ConfigureSection rewardSection = section.getSection(rewardID);
                 if (rewardSection == null) continue;
 
                 RewardContents c = RewardContents.parse(rewardID, rewardSection);

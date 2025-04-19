@@ -1,6 +1,6 @@
 package cc.carm.plugin.timereward.storage.database;
 
-import cc.carm.lib.configuration.core.value.ConfigValue;
+import cc.carm.lib.configuration.value.standard.ConfiguredValue;
 import cc.carm.lib.easysql.api.SQLManager;
 import cc.carm.lib.easysql.api.SQLTable;
 import cc.carm.lib.easysql.api.builder.TableCreateBuilder;
@@ -46,10 +46,10 @@ public enum DatabaseTables implements SQLTable {
     });
 
     private final Consumer<TableCreateBuilder> builder;
-    private final ConfigValue<String> name;
+    private final ConfiguredValue<String> name;
     private @Nullable SQLManager manager;
 
-    DatabaseTables(ConfigValue<String> name,
+    DatabaseTables(ConfiguredValue<String> name,
                    Consumer<TableCreateBuilder> builder) {
         this.name = name;
         this.builder = builder;

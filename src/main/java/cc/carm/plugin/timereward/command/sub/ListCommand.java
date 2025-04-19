@@ -20,7 +20,7 @@ public class ListCommand extends SubCommand<MainCommand> {
     @Override
     public Void execute(JavaPlugin plugin, CommandSender sender, String[] args) {
         Collection<RewardContents> awards = TimeRewardAPI.getRewardManager().listRewards().values();
-        PluginMessages.LIST.HEADER.send(sender, awards.size());
+        PluginMessages.LIST.HEADER.sendTo(sender, awards.size());
 
         for (RewardContents reward : awards) {
             if (reward.getPermission() != null) {

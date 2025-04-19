@@ -28,7 +28,7 @@ public class UserCommand extends SubCommand<MainCommand> {
 
         Player player = Bukkit.getPlayer(args[0]);
         if (player == null) {
-            PluginMessages.NOT_ONLINE.send(sender, args[0]);
+            PluginMessages.NOT_ONLINE.sendTo(sender, args[0]);
             return null;
         }
 
@@ -44,7 +44,7 @@ public class UserCommand extends SubCommand<MainCommand> {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         user.getClaimedRewards().forEach((id, time) -> {
-            PluginMessages.USER_RECEIVED.send(sender, id, time.format(formatter));
+            PluginMessages.USER_RECEIVED.sendTo(sender, id, time.format(formatter));
         });
 
         return null;

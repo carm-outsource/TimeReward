@@ -1,6 +1,6 @@
 package cc.carm.plugin.timereward.data;
 
-import cc.carm.lib.configuration.core.source.ConfigurationWrapper;
+import cc.carm.lib.configuration.source.section.ConfigureSection;
 import cc.carm.lib.easyplugin.utils.ColorParser;
 import cc.carm.plugin.timereward.Main;
 import org.bukkit.entity.Player;
@@ -88,7 +88,7 @@ public class RewardContents {
         return map;
     }
 
-    public static RewardContents parse(String id, @NotNull ConfigurationWrapper<?> section) {
+    public static RewardContents parse(String id, @NotNull ConfigureSection section) {
         long time = section.getLong("time", -1L);
         if (time <= 0) {
             Main.severe("奖励 " + id + " 的时间配置错误，请检查配置文件。");

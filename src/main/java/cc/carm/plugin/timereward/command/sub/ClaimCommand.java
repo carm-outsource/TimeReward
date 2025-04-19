@@ -23,7 +23,7 @@ public class ClaimCommand extends SubCommand<MainCommand> {
     @Override
     public Void execute(JavaPlugin plugin, CommandSender sender, String[] args) {
         if (!(sender instanceof Player)) {
-            PluginMessages.NOT_PLAYER.send(sender);
+            PluginMessages.NOT_PLAYER.sendTo(sender);
             return null;
         }
 
@@ -35,7 +35,7 @@ public class ClaimCommand extends SubCommand<MainCommand> {
 
             List<RewardContents> unclaimedRewards = manager.getUnclaimedRewards(player);
             if (unclaimedRewards.isEmpty()) {
-                PluginMessages.NO_UNCLAIMED_REWARD.send(sender);
+                PluginMessages.NO_UNCLAIMED_REWARD.sendTo(sender);
                 return null;
             }
 
@@ -45,12 +45,12 @@ public class ClaimCommand extends SubCommand<MainCommand> {
 
             RewardContents reward = manager.getReward(rewardID);
             if (reward == null) {
-                PluginMessages.NOT_EXISTS.send(sender, rewardID);
+                PluginMessages.NOT_EXISTS.sendTo(sender, rewardID);
                 return null;
             }
 
             if (!manager.isClaimable(player, reward)) {
-                PluginMessages.NOT_CLAIMABLE.send(sender, reward.getDisplayName());
+                PluginMessages.NOT_CLAIMABLE.sendTo(sender, reward.getDisplayName());
                 return null;
             }
 

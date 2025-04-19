@@ -1,10 +1,10 @@
 package cc.carm.plugin.timereward;
 
-import cc.carm.lib.configuration.core.source.ConfigurationProvider;
+import cc.carm.lib.configuration.source.ConfigurationHolder;
 import cc.carm.lib.easyplugin.EasyPlugin;
 import cc.carm.lib.easyplugin.updatechecker.GHUpdateChecker;
 import cc.carm.lib.easyplugin.utils.MessageUtils;
-import cc.carm.lib.mineconfiguration.bukkit.MineConfiguration;
+import cc.carm.lib.mineconfiguration.bukkit.source.BukkitConfigFactory;
 import cc.carm.plugin.timereward.command.MainCommand;
 import cc.carm.plugin.timereward.conf.PluginConfig;
 import cc.carm.plugin.timereward.conf.PluginMessages;
@@ -18,12 +18,14 @@ import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 
+import java.io.File;
+
 public class Main extends EasyPlugin {
     private static Main instance;
 
-    protected ConfigurationProvider<?> configProvider;
-    protected ConfigurationProvider<?> messageProvider;
-    protected ConfigurationProvider<?> rewardProvider;
+    protected ConfigurationHolder<?> configProvider;
+    protected ConfigurationHolder<?> messageProvider;
+    protected ConfigurationHolder<?> rewardProvider;
 
     protected MySQLStorage storage;
     protected UserManager userManager;
@@ -36,13 +38,13 @@ public class Main extends EasyPlugin {
     @Override
     protected void load() {
         log("加载插件配置文件...");
-        this.configProvider = MineConfiguration.from(this, "config.yml");
+        this.configProvider = BukkitConfigFactory.from(new File(getDataFolder(), "config.yml")).build();
         this.configProvider.initialize(PluginConfig.class);
 
-        this.messageProvider = MineConfiguration.from(this, "messages.yml");
+        this.messageProvider = BukkitConfigFactory.from(new File(getDataFolder(), "messages.yml")).build();
         this.messageProvider.initialize(PluginMessages.class);
 
-        this.rewardProvider = MineConfiguration.from(this, "rewards.yml");
+        this.rewardProvider = BukkitConfigFactory.from(new File(getDataFolder(), "rewards.yml")).build();
         this.rewardProvider.initialize(RewardsConfig.class);
     }
 
@@ -137,15 +139,15 @@ public class Main extends EasyPlugin {
         return getInstance().storage;
     }
 
-    public ConfigurationProvider<?> getConfigProvider() {
+    public ConfigurationHolder<?> getConfigProvider() {
         return configProvider;
     }
 
-    public ConfigurationProvider<?> getMessageProvider() {
+    public ConfigurationHolder<?> getMessageProvider() {
         return messageProvider;
     }
 
-    public ConfigurationProvider<?> getRewardProvider() {
+    public ConfigurationHolder<?> getRewardProvider() {
         return rewardProvider;
     }
 }

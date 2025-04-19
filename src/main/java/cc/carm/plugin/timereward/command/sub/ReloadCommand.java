@@ -19,7 +19,7 @@ public class ReloadCommand extends SubCommand<MainCommand> {
     public Void execute(JavaPlugin plugin, CommandSender sender, String[] args) throws Exception {
 
         long s1 = System.currentTimeMillis();
-        PluginMessages.RELOAD.START.send(sender);
+        PluginMessages.RELOAD.START.sendTo(sender);
 
         try {
             Main.getInstance().getConfigProvider().reload();
@@ -31,7 +31,7 @@ public class ReloadCommand extends SubCommand<MainCommand> {
                     TimeRewardAPI.getRewardManager().listRewards().size()
             ).to(sender);
         } catch (Exception e) {
-            PluginMessages.RELOAD.ERROR.send(sender);
+            PluginMessages.RELOAD.ERROR.sendTo(sender);
             e.printStackTrace();
         }
         return null;

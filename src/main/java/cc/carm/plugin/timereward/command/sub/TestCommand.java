@@ -23,17 +23,17 @@ public class TestCommand extends SubCommand<MainCommand> {
     public Void execute(JavaPlugin plugin, CommandSender sender, String[] args) throws Exception {
         if (args.length < 1) return getParent().noArgs(sender);
         if (!(sender instanceof Player)) {
-            PluginMessages.NOT_PLAYER.send(sender);
+            PluginMessages.NOT_PLAYER.sendTo(sender);
             return null;
         }
 
         RewardContents contents = TimeRewardAPI.getRewardManager().getReward(args[0]);
         if (contents == null) {
-            PluginMessages.NOT_EXISTS.send(sender, args[0]);
+            PluginMessages.NOT_EXISTS.sendTo(sender, args[0]);
             return null;
         }
 
-        PluginMessages.COMMAND_LIST.send(sender, contents.getRewardID());
+        PluginMessages.COMMAND_LIST.sendTo(sender, contents.getRewardID());
 
         TimeRewardAPI.getRewardManager().executeCommand((Player) sender, contents);
         return null;

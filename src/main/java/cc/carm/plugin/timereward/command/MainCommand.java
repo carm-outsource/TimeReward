@@ -22,16 +22,16 @@ public class MainCommand extends CommandHandler {
     @Override
     public Void noArgs(CommandSender sender) {
         if (sender.hasPermission("TimeReward.admin")) {
-            PluginMessages.USAGE.ADMIN.send(sender);
+            PluginMessages.USAGE.ADMIN.sendTo(sender);
         } else {
-            PluginMessages.USAGE.USER.send(sender);
+            PluginMessages.USAGE.USER.sendTo(sender);
         }
         return null;
     }
 
     @Override
     public Void noPermission(CommandSender sender) {
-        PluginMessages.NO_PERMISSION.send(sender);
+        PluginMessages.NO_PERMISSION.sendTo(sender);
         return null;
     }
 }
