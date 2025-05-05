@@ -22,7 +22,7 @@ public enum DatabaseTables implements SQLTable {
 
         table.addColumn("daily_time", "MEDIUMINT UNSIGNED NOT NULL DEFAULT 0"); // 用户日在线时间(秒)
         table.addColumn("weekly_time", "MEDIUMINT UNSIGNED NOT NULL DEFAULT 0"); // 用户周在线时间(秒)
-        table.addColumn("monthly_time", "INT UNSIGNED NOT NULL DEFAULT 0"); // 用户月在线时间(秒)
+        table.addColumn("monthly_time", "MEDIUMINT UNSIGNED NOT NULL DEFAULT 0"); // 用户月在线时间(秒)
         table.addColumn("total_time", "INT UNSIGNED NOT NULL DEFAULT 0"); // 用户总在线时间(秒)
 
         table.addColumn("update",

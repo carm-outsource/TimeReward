@@ -25,13 +25,20 @@ public interface PluginConfig extends Configuration {
             "检查更新为异步操作，绝不会影响性能与使用体验。"
     })
     ConfiguredValue<Boolean> CHECK_UPDATE = ConfiguredValue.of(Boolean.class, true);
-    
+
     @HeaderComments({
             "自动保存设定，用于设置自动保存的时间间隔，单位为秒（小于等于0则关闭）。",
             "一般来说，玩家会在退出游戏时进行保存。",
             "但如果您希望额外的定期保存数据以避免数据丢失，可以选择开启。",
     })
     ConfiguredValue<Long> AUTO_SAVE = ConfiguredValue.of(Long.class, 60L);
+
+    @HeaderComments({
+            "是否在保存时优先使用数据库中的数据。",
+            "若启用，则会在保存数据时在数据库中重新读取数据计算时间，以确利用最新数据；",
+            "若关闭，则保存时会直接采用进入服务器时所加载的数据进行计算。"
+    })
+    ConfiguredValue<Boolean> USE_STORAGE_DATA = ConfiguredValue.of(Boolean.class, true);
 
     @HeaderComments("周起始日，用于判断周度奖励的结算日期。")
     ConfiguredValue<DayOfWeek> WEEK_FIRST_DAY = ConfiguredValue.builderOf(DayOfWeek.class)

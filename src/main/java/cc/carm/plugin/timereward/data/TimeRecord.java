@@ -1,21 +1,16 @@
 package cc.carm.plugin.timereward.data;
 
-import cc.carm.plugin.timereward.conf.PluginConfig;
+import cc.carm.plugin.timereward.util.DateTimeUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.temporal.Temporal;
-import java.time.temporal.TemporalField;
-import java.time.temporal.WeekFields;
 
 public class TimeRecord {
 
     public static TimeRecord empty() {
         return new TimeRecord(LocalDate.now(), 0, 0, 0, 0);
     }
-
 
     protected final @NotNull LocalDate date;
 
@@ -68,37 +63,14 @@ public class TimeRecord {
 
     public boolean isWeekUpdated() {
         if (!isDayUpdated()) return false; // Same day always same week
-        return !isSameWeek(LocalDate.now(), getDate());
+        return !DateTimeUtils.sameWeek(LocalDate.now(), getDate());
     }
 
     public boolean isMonthUpdated() {
         if (!isDayUpdated()) return false; // Same day always same month
-
-        // Predicate current month is after the month of the date
-        return LocalDate.now().getMonth().compareTo(getDate().getMonth()) > 0;
+        return !DateTimeUtils.sameMonth(LocalDate.now(), getDate());
     }
 
-    public static boolean isSameWeek(Temporal a, Temporal b) {
-        TemporalField woy = WeekFields.of(PluginConfig.WEEK_FIRST_DAY.getNotNull(), 4).weekOfWeekBasedYear();
-        return a.get(woy) == b.get(woy);
-    }
-
-    public static boolean isSameMonth(LocalDate a, LocalDate b) {
-        return a.getMonth().equals(b.getMonth());
-    }
-
-    public static LocalDateTime getTodayStart() {
-        return LocalDate.now().atTime(0, 0);
-    }
-
-    public static LocalDateTime getThisWeekStart() {
-        TemporalField woy = WeekFields.of(PluginConfig.WEEK_FIRST_DAY.getNotNull(), 4).weekOfWeekBasedYear();
-        return LocalDate.now().with(woy, 1).atTime(0, 0);
-    }
-
-    public static LocalDateTime getThisMonthStart() {
-        return LocalDate.now().withDayOfMonth(1).atTime(0, 0);
-    }
 
     @Override
     public String toString() {

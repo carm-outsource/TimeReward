@@ -14,6 +14,7 @@ import cc.carm.plugin.timereward.listener.UserListener;
 import cc.carm.plugin.timereward.manager.RewardManager;
 import cc.carm.plugin.timereward.manager.UserManager;
 import cc.carm.plugin.timereward.storage.database.MySQLStorage;
+import cc.carm.plugin.timereward.util.DateTimeUtils;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
@@ -49,6 +50,8 @@ public class Main extends EasyPlugin {
 
         this.rewardProvider = BukkitConfigFactory.from(new File(getDataFolder(), "rewards.yml")).build();
         this.rewardProvider.initialize(RewardsConfig.class);
+
+        DateTimeUtils.WEEK_START_DAY = PluginConfig.WEEK_FIRST_DAY::resolve;
     }
 
     @Override
