@@ -17,7 +17,7 @@ public enum IntervalType {
     ),
 
     DAILY(
-            1, Duration.ofDays(1), time -> DateTimeUtils.sameDay(time.toLocalDate()),
+            1, Duration.ofDays(1), time -> !DateTimeUtils.sameDay(time.toLocalDate()),
             (timeRecord, join) -> {
                 LocalDateTime now = LocalDateTime.now();
                 if (!now.toLocalDate().isEqual(join.toLocalDate())) {

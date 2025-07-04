@@ -1,6 +1,6 @@
 package cc.carm.plugin.timereward.user;
 
-import cc.carm.lib.easyplugin.user.UserData;
+import cc.carm.lib.easyplugin.user.AbstractUserData;
 import cc.carm.plugin.timereward.data.IntervalType;
 import cc.carm.plugin.timereward.data.RewardContents;
 import cc.carm.plugin.timereward.data.TimeRecord;
@@ -15,7 +15,7 @@ import java.util.UUID;
 /**
  * 用户奖励数据，用于存储用户的奖励的领取情况。
  */
-public class UserRewardData extends UserData<UUID> {
+public class UserRewardData extends AbstractUserData<UUID> {
 
     private final @NotNull Map<String, LocalDateTime> claimedRewards; // 记录已领取的奖励ID
 
@@ -35,7 +35,7 @@ public class UserRewardData extends UserData<UUID> {
     }
 
     public @NotNull UUID getUserUUID() {
-        return getKey();
+        return key();
     }
 
     /**

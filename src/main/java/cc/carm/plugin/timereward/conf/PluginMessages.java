@@ -91,6 +91,10 @@ public interface PluginMessages extends Configuration {
             "&c&l抱歉！&f但您暂时未满足领取奖励 &e%(award) &f的条件。"
     ).params("award").build();
 
+    ConfiguredMessage<BaseComponent[]> ALREADY_CLAIMING = list().defaults(
+            "&e&l请稍候...&f您当前有正在领取的奖励任务，单次只可领取一份奖励。"
+    ).build();
+    
     ConfiguredMessage<BaseComponent[]> NO_UNCLAIMED_REWARD = list().defaults(
             "&f您暂时没有未领取的奖励。"
     ).build();

@@ -18,11 +18,14 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 public class RewardManager {
 
     protected BukkitRunnable runnable;
+
+    protected Map<UUID, CompletableFuture<Boolean>> claiming = new ConcurrentHashMap<>();
 
     public RewardManager(Main main) {
         this.runnable = new BukkitRunnable() {
@@ -31,6 +34,8 @@ public class RewardManager {
                 if (Bukkit.getOnlinePlayers().isEmpty()) return;
 
                 for (Player player : Bukkit.getOnlinePlayers()) {
+                    if (isClaiming(player.getUniqueId())) continue; // 如果正在领取奖励，则跳过
+
                     List<RewardContents> rewards = getUnclaimedRewards(player).stream()
                             .filter(RewardContents::isAutoClaimed)
                             .collect(Collectors.toList());
@@ -59,6 +64,14 @@ public class RewardManager {
 
     public Map<String, RewardContents> listRewards() {
         return Collections.unmodifiableMap(RewardsConfig.getContents());
+    }
+
+    public boolean isClaiming(@NotNull UUID uuid) {
+        return claiming.containsKey(uuid) && !claiming.get(uuid).isDone();
+    }
+
+    public CompletableFuture<Boolean> getClaiming(@NotNull UUID uuid) {
+        return claiming.get(uuid);
     }
 
     @Unmodifiable
@@ -97,22 +110,27 @@ public class RewardManager {
     }
 
     public CompletableFuture<Boolean> claimRewards(Player player, Collection<RewardContents> rewards, boolean check) {
+        CompletableFuture<Boolean> exists = claiming.get(player.getUniqueId());
+        if (exists != null) return CompletableFuture.completedFuture(false); // 如果玩家正在领取奖励，则直接返回false
+
         Set<RewardContents> contents = rewards.stream()
                 .filter(r -> !check || isClaimable(player, r))
                 .collect(Collectors.toSet());
 
+        if (contents.isEmpty()) {
+            return CompletableFuture.completedFuture(true); // 没有可领取的奖励，直接返回true。
+        }
+
         Map<String, LocalDateTime> map = new LinkedHashMap<>();
         contents.forEach(reward -> map.put(reward.getRewardID(), LocalDateTime.now()));
 
-        return Main.getInstance().supplyAsync(() -> {
-            try {
+        UserRewardData user = TimeRewardAPI.getUserManager().get(player);
+        if (user == null) return CompletableFuture.completedFuture(false); // 玩家数据加载中
 
-                UserRewardData user = TimeRewardAPI.getUserManager().get(player);
-                if (user == null) return false; // 玩家数据加载中
-                
+        CompletableFuture<Boolean> task = Main.getInstance().supplyAsync(() -> {
+            try {
                 Main.getStorage().addClaimedData(player.getUniqueId(), map);
                 contents.forEach(user::updateClaimed);
-
                 return true;
             } catch (Exception ex) {
                 Main.severe("为玩家 " + player.getName() + " 领取奖励时发生错误。");
@@ -128,6 +146,12 @@ public class RewardManager {
             } else {
                 return CompletableFuture.completedFuture(false);
             }
+        });
+
+        claiming.put(player.getUniqueId(), task);
+
+        return task.whenComplete((b, t) -> {
+            claiming.remove(player.getUniqueId());
         });
     }
 

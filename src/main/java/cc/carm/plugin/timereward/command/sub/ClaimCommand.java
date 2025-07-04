@@ -30,6 +30,11 @@ public class ClaimCommand extends SubCommand<MainCommand> {
         Player player = (Player) sender;
         RewardManager manager = TimeRewardAPI.getRewardManager();
 
+        if(manager.isClaiming(player.getUniqueId())){
+            PluginMessages.ALREADY_CLAIMING.sendTo(sender);
+            return null;
+        }
+
         @Nullable String rewardID = args.length > 0 ? args[0] : null;
         if (rewardID == null) {
 
