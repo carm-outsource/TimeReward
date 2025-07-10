@@ -1,9 +1,11 @@
 package cc.carm.plugin.timereward.data;
 
+import cc.carm.plugin.timereward.Main;
 import cc.carm.plugin.timereward.util.DateTimeUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.function.BiFunction;
@@ -18,16 +20,25 @@ public enum IntervalType {
 
     DAILY(
             1, Duration.ofDays(1), time -> !DateTimeUtils.sameDay(time.toLocalDate()),
-            (timeRecord, join) -> {
+            (record, join) -> {
                 LocalDateTime now = LocalDateTime.now();
-                if (!now.toLocalDate().isEqual(join.toLocalDate())) {
-                    // 加入的时间和现在的时间不在同一天
-                    return Duration.between(DateTimeUtils.todayStartTime(), now);
+                LocalDate today = LocalDate.now();
+                if (DateTimeUtils.sameDay(join.toLocalDate(), today)) {
+                    // 如果加入的时间和今天的日期相同
+                    if (DateTimeUtils.sameDay(record.getDate(), today)) {
+                        // 如果上一次记录的日期和今天的日期相同
+                        // 则从加入的时间开始计算到现在的时间，并加上当天的游玩时间
+                        return Duration.between(join, now).plus(record.getDailyTime());
+                    } else {
+                        // 如果上一次记录的日期和今天的日期不同
+                        // 则从加入的时间开始计算到现在的时间
+                        return Duration.between(join, now);
+                    }
+                } else {
+                    // 如果加入的时间和今天的日期不同
+                    // 则从今天的0点开始计算到现在的时间
+                    return Duration.between(today.atTime(0, 0, 0), now);
                 }
-                if (now.toLocalDate().isEqual(timeRecord.getDate())) {  // 和记录还在同一天
-                    return Duration.between(join, now).plus(timeRecord.getDailyTime());
-                }
-                return Duration.between(join, now);   // 加入的时间和现在的时间在同一天
             }
     ),
     WEEKLY(
@@ -35,13 +46,15 @@ public enum IntervalType {
             time -> !DateTimeUtils.sameWeek(time),
             (r, join) -> {
                 LocalDateTime now = LocalDateTime.now();
-                if (!DateTimeUtils.sameWeek(join, now)) {
+                if (DateTimeUtils.sameWeek(join.toLocalDate(), now)) {
+                    if (DateTimeUtils.sameWeek(r.getDate(), now.toLocalDate())) {
+                        return Duration.between(join, now).plus(r.getWeeklyTime());
+                    } else {
+                        return Duration.between(join, now);
+                    }
+                } else {
                     return Duration.between(DateTimeUtils.currentWeekStartTime(), now);
                 }
-                if (DateTimeUtils.sameWeek(r.getDate(), now)) {
-                    return Duration.between(join, now).plus(r.getWeeklyTime());
-                }
-                return Duration.between(join, now);
             }
     ),
 
@@ -50,13 +63,15 @@ public enum IntervalType {
             time -> !DateTimeUtils.sameMonth(time.toLocalDate()),
             (r, join) -> {
                 LocalDateTime now = LocalDateTime.now();
-                if (!DateTimeUtils.sameMonth(join.toLocalDate(), now.toLocalDate())) {
+                if (DateTimeUtils.sameMonth(join.toLocalDate(), now.toLocalDate())) {
+                    if (DateTimeUtils.sameMonth(r.getDate(), now.toLocalDate())) {
+                        return Duration.between(join, now).plus(r.getMonthlyTime());
+                    } else {
+                        return Duration.between(join, now);
+                    }
+                } else {
                     return Duration.between(DateTimeUtils.currentMonthStartTime(), now);
                 }
-                if (DateTimeUtils.sameMonth(r.getDate(), now.toLocalDate())) {
-                    return Duration.between(join, now).plus(r.getMonthlyTime());
-                }
-                return Duration.between(join, now);
             }
     );
 
@@ -82,22 +97,19 @@ public enum IntervalType {
         return maxDuration;
     }
 
-    public @NotNull BiFunction<TimeRecord, LocalDateTime, Duration> calculator() {
-        return calculator;
-    }
-
-    public @NotNull Predicate<LocalDateTime> changePredicator() {
-        return periodChangePredicate;
-    }
 
     public Duration calculate(@NotNull TimeRecord timeRecord, @NotNull LocalDateTime joinTime) {
         Duration result = calculator.apply(timeRecord, joinTime);
         // 如果超过最大值，则返回最大值
-        return result.compareTo(maxDuration) > 0 ? maxDuration : result;
+        if (result.compareTo(maxDuration) > 0) {
+            Main.debugging("在线时间超过最大值，类型: " + this.name() + ", 计算结果: " + result + " 加入时间 " + joinTime + " 时间记录" + timeRecord);
+            return maxDuration;
+        }
+        return result;
     }
 
     public boolean isPeriodChanged(@NotNull LocalDateTime claimedDate) {
-        return changePredicator().test(claimedDate);
+        return periodChangePredicate.test(claimedDate);
     }
 
     public static IntervalType parse(String input) {

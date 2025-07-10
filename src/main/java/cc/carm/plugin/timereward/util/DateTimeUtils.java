@@ -18,7 +18,9 @@ public class DateTimeUtils {
     }
 
     public static boolean sameDay(LocalDate a, LocalDate b) {
-        return a.getDayOfYear() == b.getDayOfYear() && a.getYear() == b.getYear();
+        return a.getYear() == b.getYear() &&
+                a.getMonth() == b.getMonth() &&
+                a.getDayOfMonth() == b.getDayOfMonth();
     }
 
     public static boolean sameWeek(Temporal a) {

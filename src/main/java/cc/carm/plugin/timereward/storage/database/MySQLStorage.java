@@ -76,6 +76,13 @@ public class MySQLStorage {
                     long monthly = rs.getLong("monthly_time");
                     long total = rs.getLong("total_time");
 
+                    Main.debugging("成功从数据库中加载用户在线时间记录: " + uuid + " -> {",
+                            " - DAILY = " + daily,
+                            " - WEEKLY = " + weekly,
+                            " - MONTHLY = " + monthly,
+                            " - TOTAL = " + total,
+                            "}");
+
                     return new TimeRecord(date, daily, weekly, monthly, total);
                 }, TimeRecord.empty());
     }
