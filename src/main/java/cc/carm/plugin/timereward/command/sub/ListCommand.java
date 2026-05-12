@@ -29,7 +29,7 @@ public class ListCommand extends SubCommand<MainCommand> {
                         reward.getTime(), reward.getPermission()
                 ).to(sender);
             } else {
-                PluginMessages.LIST.OBJECT_PERM.prepare(
+                PluginMessages.LIST.OBJECT.prepare(
                         reward.getRewardID(), reward.getDisplayName(),
                         reward.getType().name(), reward.getTime()
                 ).to(sender);
